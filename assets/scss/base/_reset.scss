@@ -1,0 +1,29 @@
+// external url font family start here
+@import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+// external url font family end here
+
+// external url font awesome start here
+// @import url('');
+// external url font awesome end here
+
+// internal url font family start here
+// @font-face {
+//     font-family: '';
+//     src: url('regular.otf') format('opentype');
+// }
+
+// internal_url_font_family_end_here
+
+// defaults start here
+* {
+    margin: 0;
+    padding: 0;
+    outline: none;
+    text-decoration: none;
+    list-style-type: none;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+    font-family: 'Luckiest Guy';
+}
+
+// defaults end here

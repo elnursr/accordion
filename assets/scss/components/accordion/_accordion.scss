@@ -1,0 +1,58 @@
+@use '../../abstracts' as v;
+
+.accordion {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1em;
+    padding: 1em;
+
+    &__item {
+        position: relative;
+        padding: .7em;
+        border-radius: .3em;
+        border: 1px solid v.$black;
+        // background-image: url('../media/jpg/wolfenstein.jpg');
+        // background-position: center;
+        // background-size: cover;
+    }
+
+    &__head {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+    }
+
+    &__body {
+        position: relative;
+        overflow: hidden;
+        height: 0;
+        transition: height .3s;
+    }
+
+    &__icon {
+        display: inline-block;
+        font-size: 1.9em;
+
+        svg {
+            transition: transform .3s cubic-bezier(0.17, 0.89, 0.32, 1.28);
+        }
+
+        &--active {
+            svg {
+                transform: rotate(315deg);
+            }
+        }
+    }
+
+    &__title {
+        transition: color .3s;
+
+        &--active {
+            color: goldenrod;
+        }
+    }
+}
