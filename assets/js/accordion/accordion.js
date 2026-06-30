@@ -44,7 +44,6 @@ Accordion.prototype.toggle = function () {
         this.collapsedHeight = this.elements.elementItems[i].scrollHeight;
         this.elements.headerElements[i].addEventListener('click', function (e) {
             e.preventDefault();
-            // this section must be modified
             this.addClassName({
                 element: this.elements.iconElements[i],
                 className: this.classNames.iconClassName
@@ -53,10 +52,12 @@ Accordion.prototype.toggle = function () {
                 element: this.elements.titleElements[i],
                 className: this.classNames.titleClassName
             });
-            this.elements.bodyElements[i].style.height = this.elements.bodyElements[i].scrollHeight + 'px';
+            this.setHeightElement(this.elements.bodyElements[i]);
             // this section must be modified
             this.expandedHeight = this.elements.elementItems[i].scrollHeight;
-            if (this.collapsedHeight < this.expandedHeight) {
+            console.log(this.collapsedHeight);
+            console.log(this.expandedHeight);
+            if (this.collapsedHeight !== this.expandedHeight) {
                 this.elements.bodyElements[i].style.height = '0px';
                 this.elements.iconElements[i].classList.remove(this.classNames.iconClassName);
                 this.elements.titleElements[i].classList.remove(this.classNames.titleClassName);
@@ -69,26 +70,35 @@ Accordion.prototype.switch = function () {
     for (let i = 0; i < this.elements.headerElements.length; i++) {
         this.elements.headerElements[i].addEventListener('click', function (e) {
             e.preventDefault();
-            this.resetHeight();
+            this.resetHeightElements(this.elements.bodyElements);
             this.resetClassNames({
                 elements: this.elements.iconElements,
-                className: this.elements.classNames.iconClassName
+                className: this.classNames.iconClassName
             });
             this.resetClassNames({
                 elements: this.elements.titleElements,
-                className: this.elements.classNames.titleClassName
+                className: this.classNames.titleClassName
             });
-            // this section must be modified
-            this.elements.iconElements[i].classList.add(this.classNames.iconClassName);
-            this.elements.titleElements[i].classList.add(this.classNames.titleClassName);
-            this.elements.bodyElements[i].style.height = this.bodyElements[i].scrollHeight + 'px';
+            this.addClassName({
+                element: this.elements.iconElements[i],
+                className: this.classNames.iconClassName
+            });
+            this.addClassName({
+                element: this.elements.titleElements[i],
+                className: this.classNames.titleClassName
+            });
+            this.setHeightElement(this.elements.bodyElements[i]);
         }.bind(this))
     }
 }
 
-Accordion.prototype.resetHeight = function () {
-    for (let i = 0; i < this.elements.bodyElements.length; i++) {
-        this.elements.bodyElements[i].style.height = '0px';
+Accordion.prototype.setHeightElement = function (element) {
+    element.style.height = element.scrollHeight + 'px';
+}
+
+Accordion.prototype.resetHeightElements = function (elements) {
+    for (let i = 0; i < elements.length; i++) {
+        elements[i].style.height = '0px';
     }
 }
 
