@@ -6,7 +6,7 @@ export function AccordionItem({ icon, title, description }) {
                     <h1 class="accordion__title">${title}</h1>
                     <span class="accordion__icon">${icon}</span>
                 </div>
-                <div class="accordion__body">
+                <div class="accordion__body" data-expanded="false">
                     <p class="accordion__description">${description}</p>
                 </div>
             </li>

@@ -5,8 +5,10 @@ import { AccordionItem } from './components/AccordionItem.js';
 import Accordion from './accordion/index.js'
 
 let accordion = new Accordion({
+    mode: 'switch',
+    widthItems: '75%',
     elements: {
-        element:document.querySelector('.accordion'),
+        element: document.querySelector('.accordion'),
         elementItems: document.querySelectorAll('.accordion__item'),
         headerElements: document.querySelectorAll('.accordion__head'),
         bodyElements: document.querySelectorAll('.accordion__body'),
@@ -16,15 +18,7 @@ let accordion = new Accordion({
     classNames: {
         iconClassName: 'accordion__icon--active',
         titleClassName: 'accordion__title--active'
-    },
-    widthItems: '75%'
+    }
 });
 
-// accordion.fillUI({
-//     accordionItem: AccordionItem,
-//     accordionDataItems: accordions
-// });
-
-// accordion.switch();
-
-accordion.toggle();
+accordion.init();

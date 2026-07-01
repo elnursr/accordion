@@ -11,6 +11,7 @@ export default function Accordion({
     titles = [] | undefined,
     descriptions = [] | undefined,
     classNames = { iconClassName: '', titleClassName: '' } | undefined,
+    mode = '' || 'switch',
     widthItems = '' | undefined,
     expandedHeight = '' | undefined,
     collapsedHeight = '' | undefined
@@ -20,6 +21,7 @@ export default function Accordion({
     this.title = titles;
     this.descriptions = descriptions;
     this.classNames = classNames;
+    this.mode = mode;
     this.widthItems = widthItems;
     this.expandedHeight = expandedHeight;
     this.collapsedHeight = collapsedHeight;
@@ -30,38 +32,40 @@ export default function Accordion({
     }
 }
 
+Accordion.prototype.init = function () {
+    if (this.mode === 'toggle') {
+        this.toggle();
+    }
+    else {
+        this.switch();
+    }
+}
+
 Accordion.prototype.fillUI = function ({ accordionDataItems, accordionItem }) {
-    let emptyHTML = '';
+    let renderHTML = '';
     for (let i = 0; i < accordionDataItems.length; i++) {
         let { icon, title, description } = accordionDataItems[i];
-        emptyHTML += accordionItem({ icon, title, description });
+        renderHTML += accordionItem({ icon, title, description });
     }
-    this.element.innerHTML = emptyHTML;
+    this.elements.element.innerHTML = renderHTML;
 }
 
 Accordion.prototype.toggle = function () {
     for (let i = 0; i < this.elements.headerElements.length; i++) {
+
         this.collapsedHeight = this.elements.elementItems[i].scrollHeight;
+
         this.elements.headerElements[i].addEventListener('click', function (e) {
             e.preventDefault();
-            this.addClassName({
-                element: this.elements.iconElements[i],
-                className: this.classNames.iconClassName
+
+            this.updateViewVersionTwo({
+                itemElement: this.elements.elementItems[i],
+                bodyElement: this.elements.bodyElements[i],
+                iconElement: this.elements.iconElements[i],
+                titleElement: this.elements.titleElements[i],
+                collapsedHeight: this.collapsedHeight
             });
-            this.addClassName({
-                element: this.elements.titleElements[i],
-                className: this.classNames.titleClassName
-            });
-            this.setHeightElement(this.elements.bodyElements[i]);
-            // this section must be modified
-            this.expandedHeight = this.elements.elementItems[i].scrollHeight;
-            console.log(this.collapsedHeight);
-            console.log(this.expandedHeight);
-            if (this.collapsedHeight !== this.expandedHeight) {
-                this.elements.bodyElements[i].style.height = '0px';
-                this.elements.iconElements[i].classList.remove(this.classNames.iconClassName);
-                this.elements.titleElements[i].classList.remove(this.classNames.titleClassName);
-            }
+
         }.bind(this));
     }
 }
@@ -88,17 +92,22 @@ Accordion.prototype.switch = function () {
                 className: this.classNames.titleClassName
             });
             this.setHeightElement(this.elements.bodyElements[i]);
+
         }.bind(this))
     }
 }
 
-Accordion.prototype.setHeightElement = function (element) {
-    element.style.height = element.scrollHeight + 'px';
+Accordion.prototype.setHeightElement = function (bodyElement) {
+    bodyElement.style.height = bodyElement.scrollHeight + 'px';
 }
 
-Accordion.prototype.resetHeightElements = function (elements) {
-    for (let i = 0; i < elements.length; i++) {
-        elements[i].style.height = '0px';
+Accordion.prototype.resetHeightElement = function (bodyElement) {
+    bodyElement.style.height = '0px';
+}
+
+Accordion.prototype.resetHeightElements = function (bodyElements) {
+    for (let i = 0; i < bodyElements.length; i++) {
+        bodyElements[i].style.height = '0px';
     }
 }
 
@@ -106,8 +115,71 @@ Accordion.prototype.addClassName = function ({ element, className }) {
     element.classList.add(className);
 }
 
+Accordion.prototype.resetClassName = function ({ element, className }) {
+    element.classList.remove(className);
+}
+
 Accordion.prototype.resetClassNames = function ({ elements, className }) {
     for (let i = 0; i < elements.length; i++) {
         elements[i].classList.remove(className);
+    }
+}
+
+Accordion.prototype.updateView = function ({ bodyElement, iconElement, titleElement }) {
+
+    let isExpanded = bodyElement.dataset.expanded === 'true';
+
+    if (!isExpanded) {
+        bodyElement.dataset.expanded = 'true'
+        this.setHeightElement(bodyElement);
+
+        this.addClassName({
+            element: iconElement,
+            className: this.classNames.iconClassName
+        });
+        this.addClassName({
+            element: titleElement,
+            className: this.classNames.titleClassName
+        });
+    }
+    else {
+        bodyElement.dataset.expanded = 'false'
+        this.resetHeightElement(bodyElement);
+
+        this.resetClassName({
+            element: iconElement,
+            className: this.classNames.iconClassName
+        });
+        this.resetClassName({
+            element: titleElement,
+            className: this.classNames.titleClassName
+        });
+    }
+}
+
+Accordion.prototype.updateViewVersionTwo = function ({ itemElement, bodyElement, iconElement, titleElement, collapsedHeight }) {
+
+    this.addClassName({
+        element: iconElement,
+        className: this.classNames.iconClassName
+    });
+    this.addClassName({
+        element: titleElement,
+        className: this.classNames.titleClassName
+    });
+
+    this.setHeightElement(bodyElement);
+    this.expandedHeight = itemElement.scrollHeight;
+
+    if (collapsedHeight !== this.expandedHeight) {
+        this.resetHeightElement(bodyElement);
+        this.resetClassName({
+            element: iconElement,
+            className: this.classNames.iconClassName
+        });
+        this.resetClassName({
+            element: titleElement,
+            className: this.classNames.titleClassName
+        });
     }
 }
