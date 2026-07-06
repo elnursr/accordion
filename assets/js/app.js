@@ -5,7 +5,7 @@ import { AccordionItem } from './components/AccordionItem.js';
 import Accordion from './accordion/index.js'
 
 let accordion = new Accordion({
-    mode: 'switch',
+    mode: 'toggle',
     widthItems: '75%',
     elements: {
         element: document.querySelector('.accordion'),

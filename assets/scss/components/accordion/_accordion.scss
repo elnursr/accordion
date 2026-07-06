@@ -12,11 +12,13 @@
     }
 
     &__head {
+        user-select: none;
         cursor: pointer;
         position: relative;
         display: flex;
         justify-content: space-between;
         align-items: center;
+        border-radius: .3em;
     }
 
     &__head,
