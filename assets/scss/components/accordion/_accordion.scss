@@ -7,6 +7,7 @@
 
     &__item {
         position: relative;
+        width: 100%;
         border-radius: .3em;
         border: 1px solid rgb(0, 0, 0);
     }
@@ -19,6 +20,11 @@
         justify-content: space-between;
         align-items: center;
         border-radius: .3em;
+        transition: background-color .3s;
+
+        &--active {
+            background-color: rgb(198, 32, 23);
+        }
     }
 
     &__head,
@@ -34,20 +40,25 @@
     }
 
     &__title {
-        transition: color .3s;
+        transition: color .5s;
 
-        &--active {}
+        &--active {
+            color: rgb(255, 255, 255);
+        }
     }
 
     &__icon {
         display: inline-block;
         font-size: 1.9em;
+        transition: color .5s;
 
         svg {
             transition: transform .3s;
         }
 
         &--active {
+            color: rgb(255, 255, 255);
+
             svg {
                 transform: rotate(315deg);
             }

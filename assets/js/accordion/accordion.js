@@ -2,7 +2,7 @@ export default function Accordion({
     elements = {
         element: '' | undefined,
         elementItems: [] | undefined,
-        headerElements: [] | undefined,
+        headElements: [] | undefined,
         bodyElements: [] | undefined,
         iconElements: [] | undefined,
         titleElements: [] | undefined,
@@ -10,7 +10,7 @@ export default function Accordion({
     icons = [] | undefined,
     titles = [] | undefined,
     descriptions = [] | undefined,
-    classNames = { iconClassName: '', titleClassName: '' } | undefined,
+    classNames = { headClassName: '', titleClassName: '', iconClassName: '' } | undefined,
     mode = '' || 'switch',
     widthItems = '' | undefined,
     expandedHeight = '' | undefined,
@@ -42,27 +42,28 @@ Accordion.prototype.init = function () {
 }
 
 Accordion.prototype.fillUI = function ({ accordionDataItems, accordionItem }) {
-    let renderHTML = '';
+    let renderedHTML = '';
     for (let i = 0; i < accordionDataItems.length; i++) {
         let { icon, title, description } = accordionDataItems[i];
         renderHTML += accordionItem({ icon, title, description });
     }
-    this.elements.element.innerHTML = renderHTML;
+    this.elements.element.innerHTML = renderedHTML;
 }
 
 Accordion.prototype.toggle = function () {
-    for (let i = 0; i < this.elements.headerElements.length; i++) {
+    for (let i = 0; i < this.elements.headElements.length; i++) {
 
         this.collapsedHeight = this.elements.elementItems[i].scrollHeight;
 
-        this.elements.headerElements[i].addEventListener('click', function (e) {
+        this.elements.headElements[i].addEventListener('click', function (e) {
             e.preventDefault();
 
             this.updateViewVersionTwo({
                 itemElement: this.elements.elementItems[i],
-                bodyElement: this.elements.bodyElements[i],
-                iconElement: this.elements.iconElements[i],
+                headerElement: this.elements.headElements[i],
                 titleElement: this.elements.titleElements[i],
+                iconElement: this.elements.iconElements[i],
+                bodyElement: this.elements.bodyElements[i],
                 collapsedHeight: this.collapsedHeight
             });
 
@@ -71,25 +72,35 @@ Accordion.prototype.toggle = function () {
 }
 
 Accordion.prototype.switch = function () {
-    for (let i = 0; i < this.elements.headerElements.length; i++) {
-        this.elements.headerElements[i].addEventListener('click', function (e) {
+    for (let i = 0; i < this.elements.headElements.length; i++) {
+        this.elements.headElements[i].addEventListener('click', function (e) {
             e.preventDefault();
-            this.resetHeightElements(this.elements.bodyElements);
-            this.resetClassNames({
-                elements: this.elements.iconElements,
-                className: this.classNames.iconClassName
+
+            this.removeActiveClasses({
+                elements: this.elements.headElements,
+                activeClass: this.classNames.headClassName
             });
-            this.resetClassNames({
+            this.removeActiveClasses({
                 elements: this.elements.titleElements,
-                className: this.classNames.titleClassName
+                activeClass: this.classNames.titleClassName
             });
-            this.addClassName({
-                element: this.elements.iconElements[i],
-                className: this.classNames.iconClassName
+            this.removeActiveClasses({
+                elements: this.elements.iconElements,
+                activeClass: this.classNames.iconClassName
             });
-            this.addClassName({
+            this.resetHeightElements(this.elements.bodyElements);
+
+            this.addActiveClass({
+                element: this.elements.headElements[i],
+                className: this.classNames.headClassName
+            });
+            this.addActiveClass({
                 element: this.elements.titleElements[i],
                 className: this.classNames.titleClassName
+            });
+            this.addActiveClass({
+                element: this.elements.iconElements[i],
+                className: this.classNames.iconClassName
             });
             this.setHeightElement(this.elements.bodyElements[i]);
 
@@ -111,75 +122,84 @@ Accordion.prototype.resetHeightElements = function (bodyElements) {
     }
 }
 
-Accordion.prototype.addClassName = function ({ element, className }) {
+Accordion.prototype.addActiveClass = function ({ element, className }) {
     element.classList.add(className);
 }
 
-Accordion.prototype.resetClassName = function ({ element, className }) {
+Accordion.prototype.removeActiveClass = function ({ element, className }) {
     element.classList.remove(className);
 }
 
-Accordion.prototype.resetClassNames = function ({ elements, className }) {
+Accordion.prototype.removeActiveClasses = function ({ elements, activeClass }) {
     for (let i = 0; i < elements.length; i++) {
-        elements[i].classList.remove(className);
+        if (elements[i].classList.contains(activeClass)) {
+            elements[i].classList.remove(activeClass);
+        }
     }
 }
 
-Accordion.prototype.updateView = function ({ bodyElement, iconElement, titleElement }) {
+Accordion.prototype.updateView = function ({ titleElement, iconElement, bodyElement }) {
 
     let isExpanded = bodyElement.dataset.expanded === 'true';
 
     if (!isExpanded) {
-        bodyElement.dataset.expanded = 'true'
-        this.setHeightElement(bodyElement);
-
-        this.addClassName({
-            element: iconElement,
-            className: this.classNames.iconClassName
-        });
-        this.addClassName({
+        bodyElement.dataset.expanded = 'true';
+        this.addActiveClass({
             element: titleElement,
             className: this.classNames.titleClassName
         });
+        this.addActiveClass({
+            element: iconElement,
+            className: this.classNames.iconClassName
+        });
+        this.setHeightElement(bodyElement);
     }
     else {
-        bodyElement.dataset.expanded = 'false'
-        this.resetHeightElement(bodyElement);
-
-        this.resetClassName({
-            element: iconElement,
-            className: this.classNames.iconClassName
-        });
-        this.resetClassName({
+        bodyElement.dataset.expanded = 'false';
+        this.removeActiveClass({
             element: titleElement,
             className: this.classNames.titleClassName
         });
+        this.removeActiveClass({
+            element: iconElement,
+            className: this.classNames.iconClassName
+        });
+        this.resetHeightElement(bodyElement);
     }
 }
 
-Accordion.prototype.updateViewVersionTwo = function ({ itemElement, bodyElement, iconElement, titleElement, collapsedHeight }) {
+Accordion.prototype.updateViewVersionTwo = function ({ itemElement, headerElement, titleElement, iconElement, bodyElement, collapsedHeight }) {
 
-    this.addClassName({
-        element: iconElement,
-        className: this.classNames.iconClassName
+    this.addActiveClass({
+        element: headerElement,
+        className: this.classNames.headClassName
     });
-    this.addClassName({
+    this.addActiveClass({
         element: titleElement,
         className: this.classNames.titleClassName
     });
+    this.addActiveClass({
+        element: iconElement,
+        className: this.classNames.iconClassName
+    });
 
     this.setHeightElement(bodyElement);
+
     this.expandedHeight = itemElement.scrollHeight;
 
     if (collapsedHeight !== this.expandedHeight) {
-        this.resetHeightElement(bodyElement);
-        this.resetClassName({
-            element: iconElement,
-            className: this.classNames.iconClassName
+        this.removeActiveClass({
+            element: headerElement,
+            className: this.classNames.headClassName
         });
-        this.resetClassName({
+        this.removeActiveClass({
             element: titleElement,
             className: this.classNames.titleClassName
         });
+        this.removeActiveClass({
+            element: iconElement,
+            className: this.classNames.iconClassName
+        });
+        this.resetHeightElement(bodyElement);
     }
 }

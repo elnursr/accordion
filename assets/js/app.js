@@ -10,14 +10,15 @@ let accordion = new Accordion({
     elements: {
         element: document.querySelector('.accordion'),
         elementItems: document.querySelectorAll('.accordion__item'),
-        headerElements: document.querySelectorAll('.accordion__head'),
+        headElements: document.querySelectorAll('.accordion__head'),
         bodyElements: document.querySelectorAll('.accordion__body'),
+        titleElements: document.querySelectorAll('.accordion__title'),
         iconElements: document.querySelectorAll('.accordion__icon'),
-        titleElements: document.querySelectorAll('.accordion__title')
     },
     classNames: {
-        iconClassName: 'accordion__icon--active',
-        titleClassName: 'accordion__title--active'
+        headClassName: 'accordion__head--active',
+        titleClassName: 'accordion__title--active',
+        iconClassName: 'accordion__icon--active'
     }
 });
 
