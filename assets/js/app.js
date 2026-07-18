@@ -6,7 +6,7 @@ import Accordion from './accordion/index.js'
 
 let accordion = new Accordion({
     mode: 'toggle',
-    widthItems: '75%',
+    // widthItems: '75%',
     elements: {
         element: document.querySelector('.accordion'),
         elementItems: document.querySelectorAll('.accordion__item'),
