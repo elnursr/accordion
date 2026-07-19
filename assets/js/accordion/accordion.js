@@ -3,12 +3,12 @@ export default function Accordion({
         element: '' | undefined,
         elementItems: [] | undefined,
         headElements: [] | undefined,
-        bodyElements: [] | undefined,
-        iconElements: [] | undefined,
         titleElements: [] | undefined,
+        iconElements: [] | undefined,
+        bodyElements: [] | undefined,
     } | undefined,
-    icons = [] | undefined,
     titles = [] | undefined,
+    icons = [] | undefined,
     descriptions = [] | undefined,
     classNames = { headClassName: '', titleClassName: '', iconClassName: '' } | undefined,
     mode = '' || 'switch',
@@ -17,19 +17,18 @@ export default function Accordion({
     collapsedHeight = '' | undefined
 }) {
     this.elements = elements;
-    this.icons = icons;
     this.title = titles;
+    this.icons = icons;
     this.descriptions = descriptions;
     this.classNames = classNames;
     this.mode = mode;
     this.widthItems = widthItems;
     this.expandedHeight = expandedHeight;
     this.collapsedHeight = collapsedHeight;
-    if (this.elements.elementItems.length > 0 && this.widthItems) {
-        for (let i = 0; i < this.elements.elementItems.length; i++) {
-            this.elements.elementItems[i].style.width = this.widthItems;
-        }
-    }
+
+    // if (this.elements.elementItems.length === 0) {
+    //     console.log("items not found");
+    // }
 }
 
 Accordion.prototype.init = function () {
@@ -44,35 +43,37 @@ Accordion.prototype.init = function () {
 Accordion.prototype.fillUI = function ({ accordionDataItems, accordionItem }) {
     let renderedHTML = '';
     for (let i = 0; i < accordionDataItems.length; i++) {
-        let { icon, title, description } = accordionDataItems[i];
-        renderHTML += accordionItem({ icon, title, description });
+        let { title, icon, description } = accordionDataItems[i];
+        renderedHTML += accordionItem({ title, icon, description });
     }
     this.elements.element.innerHTML = renderedHTML;
+
+    return this.elements.element.children;
 }
 
 Accordion.prototype.toggle = function () {
+
     for (let i = 0; i < this.elements.headElements.length; i++) {
 
-        this.collapsedHeight = this.elements.elementItems[i].scrollHeight;
+        this.collapsedHeight = this.getCollapsedHeight(this.elements.elementItems[i]);
 
         this.elements.headElements[i].addEventListener('click', function (e) {
             e.preventDefault();
 
-            this.updateViewVersionTwo({
-                itemElement: this.elements.elementItems[i],
+            this.initalizeToggle({
                 headElement: this.elements.headElements[i],
                 titleElement: this.elements.titleElements[i],
                 iconElement: this.elements.iconElements[i],
-                bodyElement: this.elements.bodyElements[i],
-                collapsedHeight: this.collapsedHeight
+                bodyElement: this.elements.bodyElements[i]
             });
 
         }.bind(this));
     }
 }
 
-Accordion.prototype.calculateHeight = function () {
-
+Accordion.prototype.getCollapsedHeight = function (elementHeight) {
+    this.collapsedHeight = elementHeight.scrollHeight;
+    return this.collapsedHeight;
 }
 
 Accordion.prototype.switch = function () {
@@ -80,14 +81,14 @@ Accordion.prototype.switch = function () {
         this.elements.headElements[i].addEventListener('click', function (e) {
             e.preventDefault();
 
-            this.updateView({
+            this.initalizeSwitch({
                 headElement: this.elements.headElements[i],
                 titleElement: this.elements.titleElements[i],
                 iconElement: this.elements.iconElements[i],
                 bodyElement: this.elements.bodyElements[i]
             });
 
-        }.bind(this))
+        }.bind(this));
     }
 }
 
@@ -121,7 +122,38 @@ Accordion.prototype.removeActiveClasses = function ({ elements, activeClass }) {
     }
 }
 
-Accordion.prototype.updateView = function ({ headElement, titleElement, iconElement, bodyElement }) {
+Accordion.prototype.initalizeToggle = function ({ headElement, titleElement, iconElement, bodyElement }) {
+    this.removeActiveClasses({
+        elements: this.elements.headElements,
+        activeClass: this.classNames.headClassName
+    });
+    this.removeActiveClasses({
+        elements: this.elements.titleElements,
+        activeClass: this.classNames.titleClassName
+    });
+    this.removeActiveClasses({
+        elements: this.elements.iconElements,
+        activeClass: this.classNames.iconClassName
+    });
+
+    this.resetHeightElements(this.elements.bodyElements);
+
+    this.addActiveClass({
+        element: headElement,
+        className: this.classNames.headClassName
+    });
+    this.addActiveClass({
+        element: titleElement,
+        className: this.classNames.titleClassName
+    });
+    this.addActiveClass({
+        element: iconElement,
+        className: this.classNames.iconClassName
+    });
+    this.setHeightElement(bodyElement);
+}
+
+Accordion.prototype.initalizeSwitch = function ({ headElement, titleElement, iconElement, bodyElement }) {
 
     let isExpanded = bodyElement.dataset.expanded === 'true';
 
@@ -144,6 +176,7 @@ Accordion.prototype.updateView = function ({ headElement, titleElement, iconElem
     }
     else {
         bodyElement.dataset.expanded = 'false';
+
         this.removeActiveClass({
             element: headElement,
             className: this.classNames.headClassName

@@ -107,8 +107,8 @@
   color: white;
 }
 .accordion__icon--active svg {
-  -webkit-transform: rotate(315deg);
-          transform: rotate(315deg);
+  -webkit-transform: rotate(-45deg);
+          transform: rotate(-45deg);
 }
 
 .container {
