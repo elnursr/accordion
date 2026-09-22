@@ -1,12 +1,5 @@
 export default function Accordion({
-    elements = {
-        element: '' | undefined,
-        elementItems: [] | undefined,
-        headElements: [] | undefined,
-        titleElements: [] | undefined,
-        iconElements: [] | undefined,
-        bodyElements: [] | undefined,
-    } | undefined,
+    element = '' | undefined,
     titles = [] | undefined,
     icons = [] | undefined,
     descriptions = [] | undefined,
@@ -16,7 +9,7 @@ export default function Accordion({
     expandedHeight = '' | undefined,
     collapsedHeight = '' | undefined
 }) {
-    this.elements = elements;
+    this.element = element;
     this.title = titles;
     this.icons = icons;
     this.descriptions = descriptions;
@@ -42,54 +35,62 @@ Accordion.prototype.init = function () {
 
 Accordion.prototype.fillUI = function ({ accordionDataItems, accordionItem }) {
     let renderedHTML = '';
+
     for (let i = 0; i < accordionDataItems.length; i++) {
         let { title, icon, description } = accordionDataItems[i];
         renderedHTML += accordionItem({ title, icon, description });
     }
-    this.elements.element.innerHTML = renderedHTML;
 
-    return this.elements.element.children;
+    this.element.innerHTML = renderedHTML;
+}
+
+Accordion.prototype.getItemElements = function (headElement) {
+    const itemElement = headElement.closest('[data-item]');
+
+    if (!itemElement) return null;
+
+    return {
+        item: itemElement,
+        head: headElement,
+        title: itemElement.querySelector('[data-title]'),
+        icon: itemElement.querySelector('[data-icon]'),
+        body: itemElement.querySelector('[data-body]')
+    };
 }
 
 Accordion.prototype.toggle = function () {
 
-    for (let i = 0; i < this.elements.headElements.length; i++) {
+    this.element.addEventListener('click', function (e) {
 
-        this.collapsedHeight = this.getCollapsedHeight(this.elements.elementItems[i]);
+        const headElement = e.target.closest('.accordion__head');
 
-        this.elements.headElements[i].addEventListener('click', function (e) {
-            e.preventDefault();
+        if (!headElement) return;
 
-            this.initalizeToggle({
-                headElement: this.elements.headElements[i],
-                titleElement: this.elements.titleElements[i],
-                iconElement: this.elements.iconElements[i],
-                bodyElement: this.elements.bodyElements[i]
-            });
+        const itemELements = this.getItemElements(headElement);
 
-        }.bind(this));
-    }
+        this.initalizeToggle(itemELements);
+
+    }.bind(this));
+}
+
+Accordion.prototype.switch = function () {
+
+    this.element.addEventListener('click', function (e) {
+
+        const headElement = e.target.closest('.accordion__head');
+
+        if (!headElement) return;
+
+        const itemELements = this.getItemElements(headElement);
+
+        this.initalizeSwitch(itemELements);
+
+    }.bind(this));
 }
 
 Accordion.prototype.getCollapsedHeight = function (elementHeight) {
     this.collapsedHeight = elementHeight.scrollHeight;
     return this.collapsedHeight;
-}
-
-Accordion.prototype.switch = function () {
-    for (let i = 0; i < this.elements.headElements.length; i++) {
-        this.elements.headElements[i].addEventListener('click', function (e) {
-            e.preventDefault();
-
-            this.initalizeSwitch({
-                headElement: this.elements.headElements[i],
-                titleElement: this.elements.titleElements[i],
-                iconElement: this.elements.iconElements[i],
-                bodyElement: this.elements.bodyElements[i]
-            });
-
-        }.bind(this));
-    }
 }
 
 Accordion.prototype.setHeightElement = function (bodyElement) {
@@ -110,8 +111,8 @@ Accordion.prototype.addActiveClass = function ({ element, className }) {
     element.classList.add(className);
 }
 
-Accordion.prototype.removeActiveClass = function ({ element, className }) {
-    element.classList.remove(className);
+Accordion.prototype.removeActiveClass = function ({ element, activeClass }) {
+    element.classList.remove(activeClass);
 }
 
 Accordion.prototype.removeActiveClasses = function ({ elements, activeClass }) {
@@ -122,74 +123,93 @@ Accordion.prototype.removeActiveClasses = function ({ elements, activeClass }) {
     }
 }
 
-Accordion.prototype.initalizeToggle = function ({ headElement, titleElement, iconElement, bodyElement }) {
+Accordion.prototype.initalizeToggle = function ({ head, title, icon, body }) {
+
+    let headElements = document.querySelectorAll('[data-head]'),
+        titleElements = document.querySelectorAll('[data-title]'),
+        iconElements = document.querySelectorAll('[data-icon]'),
+        bodyElements = document.querySelectorAll('[data-body');
+
     this.removeActiveClasses({
-        elements: this.elements.headElements,
+        elements: headElements,
         activeClass: this.classNames.headClassName
     });
+
     this.removeActiveClasses({
-        elements: this.elements.titleElements,
+        elements: titleElements,
         activeClass: this.classNames.titleClassName
     });
+
     this.removeActiveClasses({
-        elements: this.elements.iconElements,
+        elements: iconElements,
         activeClass: this.classNames.iconClassName
     });
 
-    this.resetHeightElements(this.elements.bodyElements);
+    this.resetHeightElements(bodyElements);
 
     this.addActiveClass({
-        element: headElement,
+        element: head,
         className: this.classNames.headClassName
     });
+
     this.addActiveClass({
-        element: titleElement,
+        element: title,
         className: this.classNames.titleClassName
     });
+
     this.addActiveClass({
-        element: iconElement,
+        element: icon,
         className: this.classNames.iconClassName
     });
-    this.setHeightElement(bodyElement);
+
+    this.setHeightElement(body);
 }
 
-Accordion.prototype.initalizeSwitch = function ({ headElement, titleElement, iconElement, bodyElement }) {
+Accordion.prototype.initalizeSwitch = function ({ head, title, icon, body }) {
 
-    let isExpanded = bodyElement.dataset.expanded === 'true';
+    let isExpanded = body.dataset.expanded === 'true';
 
     if (!isExpanded) {
-        bodyElement.dataset.expanded = 'true';
+
+        body.dataset.expanded = 'true';
 
         this.addActiveClass({
-            element: headElement,
+            element: head,
             className: this.classNames.headClassName
         });
+
         this.addActiveClass({
-            element: titleElement,
+            element: title,
             className: this.classNames.titleClassName
         });
+
         this.addActiveClass({
-            element: iconElement,
+            element: icon,
             className: this.classNames.iconClassName
         });
-        this.setHeightElement(bodyElement);
+
+        this.setHeightElement(body);
     }
     else {
-        bodyElement.dataset.expanded = 'false';
+
+        body.dataset.expanded = 'false';
 
         this.removeActiveClass({
-            element: headElement,
-            className: this.classNames.headClassName
+            element: head,
+            activeClass: this.classNames.headClassName
         });
+
         this.removeActiveClass({
-            element: titleElement,
-            className: this.classNames.titleClassName
+            element: title,
+            activeClass: this.classNames.titleClassName
         });
+
         this.removeActiveClass({
-            element: iconElement,
-            className: this.classNames.iconClassName
+            element: icon,
+            activeClass: this.classNames.iconClassName
         });
-        this.resetHeightElement(bodyElement);
+
+        this.resetHeightElement(body);
     }
 }
 

@@ -1,19 +1,12 @@
 import { accordions } from './data/data.js';
 
-import { AccordionItem } from './components/AccordionItem.js';
-
 import Accordion from './accordion/index.js'
 
+import { AccordionItem } from './components/AccordionItem.js';
+
 let accordion = new Accordion({
-    mode: 'switch',
-    elements: {
-        element: document.querySelector('.accordion'),
-        elementItems: document.querySelectorAll('.accordion__item'),
-        headElements: document.querySelectorAll('.accordion__head'),
-        bodyElements: document.querySelectorAll('.accordion__body'),
-        titleElements: document.querySelectorAll('.accordion__title'),
-        iconElements: document.querySelectorAll('.accordion__icon'),
-    },
+    mode: 'toggle',
+    element: document.querySelector('.accordion'),
     classNames: {
         headClassName: 'accordion__head--active',
         titleClassName: 'accordion__title--active',
@@ -21,11 +14,9 @@ let accordion = new Accordion({
     }
 });
 
-// console.log(
-//     accordion.fillUI({
-//         accordionDataItems: accordions,
-//         accordionItem: AccordionItem
-//     })
-// );
-
 accordion.init();
+
+accordion.fillUI({
+    accordionItem: AccordionItem,
+    accordionDataItems: accordions
+});
