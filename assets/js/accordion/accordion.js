@@ -1,27 +1,51 @@
 export default function Accordion({
-    element = '' | undefined,
-    titles = [] | undefined,
-    icons = [] | undefined,
-    descriptions = [] | undefined,
-    classNames = { headClassName: '', titleClassName: '', iconClassName: '' } | undefined,
-    mode = '' || 'switch',
-    widthItems = '' | undefined,
-    expandedHeight = '' | undefined,
-    collapsedHeight = '' | undefined
-}) {
-    this.element = element;
-    this.title = titles;
-    this.icons = icons;
-    this.descriptions = descriptions;
-    this.classNames = classNames;
+    // destructuring
+    mode = 'switch',
+    container = '',
+    expandedHeight,
+    collapsedHeight,
+    options = {},
+    activeClassName = {}
+} = {}) {
+    // constructor
+    this.container = typeof container === 'string' ? document.querySelector(container.startsWith('.') ? container : `.${container}`) : container;
+    this.activeClassName = activeClassName;
     this.mode = mode;
-    this.widthItems = widthItems;
     this.expandedHeight = expandedHeight;
     this.collapsedHeight = collapsedHeight;
 
-    // if (this.elements.elementItems.length === 0) {
-    //     console.log("items not found");
-    // }
+    this.defaults = {
+        dataAttributes: {
+            itemData: 'item',
+            headData: 'head',
+            titleData: 'title',
+            iconData: 'icon',
+            bodyData: 'body',
+            descriptionData: 'description',
+            isExpanded: false,
+        },
+        classNames: {
+            itemClassName: 'accordion__item',
+            headClassName: 'accordion__head',
+            titleClassName: 'accordion__title',
+            iconClassName: 'accordion__icon',
+            bodyClassName: 'accordion__body',
+            descriptionClassName: 'accordion__description',
+        },
+        activeClassNames: {
+            headActiveClassName: 'accordion__head--active',
+            titleActiveClassName: 'accordion__title--active',
+            iconActiveClassName: 'accordion__icon--active'
+        }
+    };
+
+    this.options = Object.assign({}, this.defaults, options);
+
+    this.init();
+}
+
+Accordion.prototype.selectElement = function (element) {
+    return document.querySelector(element);
 }
 
 Accordion.prototype.init = function () {
@@ -33,15 +57,38 @@ Accordion.prototype.init = function () {
     }
 }
 
-Accordion.prototype.fillUI = function ({ accordionDataItems, accordionItem }) {
-    let renderedHTML = '';
+Accordion.prototype.toggle = function () {
 
-    for (let i = 0; i < accordionDataItems.length; i++) {
-        let { title, icon, description } = accordionDataItems[i];
-        renderedHTML += accordionItem({ title, icon, description });
-    }
+    this.container.addEventListener('click', function (e) {
 
-    this.element.innerHTML = renderedHTML;
+        const { activeClassNames: { headActiveClassName, titleActiveClassName, iconActiveClassName } } = this.options;
+
+        // console.log(headActiveClassName);
+
+        const headElement = e.target.closest(`.${this.defaults.headClassName}`);
+
+        if (!headElement) return;
+
+        const itemELements = this.getItemElements(headElement);
+
+        this.initalizeToggle(itemELements);
+
+    }.bind(this));
+}
+
+Accordion.prototype.switch = function () {
+
+    this.container.addEventListener('click', function (e) {
+
+        const headElement = e.target.closest(`.${this.defaults.headClassName}`);
+
+        if (!headElement) return;
+
+        const itemELements = this.getItemElements(headElement);
+
+        this.initalizeSwitch(itemELements);
+
+    }.bind(this));
 }
 
 Accordion.prototype.getItemElements = function (headElement) {
@@ -58,34 +105,18 @@ Accordion.prototype.getItemElements = function (headElement) {
     };
 }
 
-Accordion.prototype.toggle = function () {
+Accordion.prototype.fillUI = function ({ accordionDataItems, accordionItem }) {
 
-    this.element.addEventListener('click', function (e) {
+    let renderedHTML = '';
 
-        const headElement = e.target.closest('.accordion__head');
+    const defaults = this.options;
 
-        if (!headElement) return;
+    for (let i = 0; i < accordionDataItems.length; i++) {
+        let { title, icon, description } = accordionDataItems[i];
+        renderedHTML += accordionItem({ title, icon, description, defaults });
+    }
 
-        const itemELements = this.getItemElements(headElement);
-
-        this.initalizeToggle(itemELements);
-
-    }.bind(this));
-}
-
-Accordion.prototype.switch = function () {
-
-    this.element.addEventListener('click', function (e) {
-
-        const headElement = e.target.closest('.accordion__head');
-
-        if (!headElement) return;
-
-        const itemELements = this.getItemElements(headElement);
-
-        this.initalizeSwitch(itemELements);
-
-    }.bind(this));
+    this.container.innerHTML = renderedHTML;
 }
 
 Accordion.prototype.getCollapsedHeight = function (elementHeight) {
@@ -108,6 +139,7 @@ Accordion.prototype.resetHeightElements = function (bodyElements) {
 }
 
 Accordion.prototype.addActiveClass = function ({ element, className }) {
+    console.log(className);
     element.classList.add(className);
 }
 
@@ -125,41 +157,43 @@ Accordion.prototype.removeActiveClasses = function ({ elements, activeClass }) {
 
 Accordion.prototype.initalizeToggle = function ({ head, title, icon, body }) {
 
-    let headElements = document.querySelectorAll('[data-head]'),
+    const headElements = document.querySelectorAll('[data-head]'),
         titleElements = document.querySelectorAll('[data-title]'),
         iconElements = document.querySelectorAll('[data-icon]'),
         bodyElements = document.querySelectorAll('[data-body');
 
+    const { activeClassNames: { headActiveClassName, titleActiveClassName, iconActiveClassName } } = this.options;
+
     this.removeActiveClasses({
         elements: headElements,
-        activeClass: this.classNames.headClassName
+        activeClass: headActiveClassName
     });
 
     this.removeActiveClasses({
         elements: titleElements,
-        activeClass: this.classNames.titleClassName
+        activeClass: titleActiveClassName
     });
 
     this.removeActiveClasses({
         elements: iconElements,
-        activeClass: this.classNames.iconClassName
+        activeClass: iconActiveClassName
     });
 
     this.resetHeightElements(bodyElements);
 
     this.addActiveClass({
         element: head,
-        className: this.classNames.headClassName
+        className: headActiveClassName
     });
 
     this.addActiveClass({
         element: title,
-        className: this.classNames.titleClassName
+        className: titleActiveClassName
     });
 
     this.addActiveClass({
         element: icon,
-        className: this.classNames.iconClassName
+        className: iconActiveClassName
     });
 
     this.setHeightElement(body);
@@ -175,17 +209,17 @@ Accordion.prototype.initalizeSwitch = function ({ head, title, icon, body }) {
 
         this.addActiveClass({
             element: head,
-            className: this.classNames.headClassName
+            className: this.activeClassName.headClassName
         });
 
         this.addActiveClass({
             element: title,
-            className: this.classNames.titleClassName
+            className: this.activeClassName.titleClassName
         });
 
         this.addActiveClass({
             element: icon,
-            className: this.classNames.iconClassName
+            className: this.activeClassName.iconClassName
         });
 
         this.setHeightElement(body);
@@ -196,17 +230,17 @@ Accordion.prototype.initalizeSwitch = function ({ head, title, icon, body }) {
 
         this.removeActiveClass({
             element: head,
-            activeClass: this.classNames.headClassName
+            activeClass: this.activeClassName.headClassName
         });
 
         this.removeActiveClass({
             element: title,
-            activeClass: this.classNames.titleClassName
+            activeClass: this.activeClassName.titleClassName
         });
 
         this.removeActiveClass({
             element: icon,
-            activeClass: this.classNames.iconClassName
+            activeClass: this.activeClassName.iconClassName
         });
 
         this.resetHeightElement(body);
@@ -217,15 +251,15 @@ Accordion.prototype.updateViewVersionTwo = function ({ itemElement, headElement,
 
     this.addActiveClass({
         element: headElement,
-        className: this.classNames.headClassName
+        className: this.activeClassName.headClassName5
     });
     this.addActiveClass({
         element: titleElement,
-        className: this.classNames.titleClassName
+        className: this.activeClassName.titleClassName
     });
     this.addActiveClass({
         element: iconElement,
-        className: this.classNames.iconClassName
+        className: this.activeClassName.iconClassName
     });
 
     this.setHeightElement(bodyElement);
@@ -235,15 +269,15 @@ Accordion.prototype.updateViewVersionTwo = function ({ itemElement, headElement,
     if (collapsedHeight !== this.expandedHeight) {
         this.removeActiveClass({
             element: headElement,
-            className: this.classNames.headClassName
+            className: this.activeClassName.headClassName
         });
         this.removeActiveClass({
             element: titleElement,
-            className: this.classNames.titleClassName
+            className: this.activeClassName.titleClassName
         });
         this.removeActiveClass({
             element: iconElement,
-            className: this.classNames.iconClassName
+            className: this.activeClassName.iconClassName
         });
         this.resetHeightElement(bodyElement);
     }

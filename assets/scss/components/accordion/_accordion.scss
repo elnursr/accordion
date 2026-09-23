@@ -20,11 +20,18 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        border-radius: .3em;
+        border-top-left-radius: .21em;
+        border-top-right-radius: .21em;
         transition: background-color .3s;
 
         &--active {
-            background-color: rgb(198, 32, 23);
+            background-color: #c62017;
+            background-color: #158bd2;
+            background-color: #db8e19;
+
+            &[data-head="activeHead"] {
+                background-image: linear-gradient(to left, #158bd2, #db8e19, #c62017);
+            }
         }
     }
 
@@ -68,7 +75,7 @@
             color: rgb(255, 255, 255);
 
             svg {
-                transform: rotate(-45deg);
+                transform: rotate(-225deg);
             }
         }
     }

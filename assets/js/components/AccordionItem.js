@@ -1,17 +1,26 @@
-export function AccordionItem({ title, icon, description }) {
+export function AccordionItem(
+    {
+        title, icon, description,
+        defaults: {
+            classNames: { itemClassName, headClassName, titleClassName, iconClassName, bodyClassName, descriptionClassName },
+            dataAttributes: { itemData, headData, titleData, iconData, bodyData, descriptionData,
+                isExpanded }
+        }
+    }
+) {
     return (
         `
-            <li class="accordion__item" data-item="accItem">
-                <div class="accordion__head" data-head="accHead">
-                    <h1 class="accordion__title" data-title="accTitle">${title}</h1>
-                    <span class="accordion__icon" data-icon="accIcon">
+            <li class="${itemClassName}" data-${itemData}="accItem">
+                <div class="${headClassName}" data-${headData}="accHead">
+                    <h1 class="${titleClassName}" data-${titleData}="accTitle">${title}</h1>
+                    <span class="${iconClassName}" data-${iconData}="accIcon">
                         <svg viewBox="0 0 24 24">
                             <use href="assets/media/svg/icons.svg#icon-${icon}"></use>
                         </svg>
                     </span>
                 </div>
-                <div class="accordion__body" data-expanded="false" data-body="accBody">
-                    <p class="accordion__description" data-description="accDescription">${description}</p>
+                <div class="${bodyClassName}" data-expanded="${isExpanded}" data-${bodyData}="accBody">
+                    <p class="${descriptionClassName}" data-${descriptionData}="accDescription">${description}</p>
                 </div>
             </li>
         `
