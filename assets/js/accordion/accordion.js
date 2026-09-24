@@ -18,6 +18,8 @@ export default function Accordion({
         dataAttributes: {
             itemData: 'item',
             headData: 'head',
+            headDataColor: 'color',
+            headDataColorValue: '#158bd2',
             titleData: 'title',
             iconData: 'icon',
             bodyData: 'body',
@@ -61,11 +63,7 @@ Accordion.prototype.toggle = function () {
 
     this.container.addEventListener('click', function (e) {
 
-        const { activeClassNames: { headActiveClassName, titleActiveClassName, iconActiveClassName } } = this.options;
-
-        // console.log(headActiveClassName);
-
-        const headElement = e.target.closest(`.${this.defaults.headClassName}`);
+        const headElement = e.target.closest(`.${this.options.classNames.headClassName}`);
 
         if (!headElement) return;
 
@@ -80,7 +78,7 @@ Accordion.prototype.switch = function () {
 
     this.container.addEventListener('click', function (e) {
 
-        const headElement = e.target.closest(`.${this.defaults.headClassName}`);
+        const headElement = e.target.closest(`.${this.defaults.classNames.headClassName}`);
 
         if (!headElement) return;
 
@@ -138,8 +136,11 @@ Accordion.prototype.resetHeightElements = function (bodyElements) {
     }
 }
 
+Accordion.prototype.setBackgroundColor = function (element) {
+    element.style.backgroundColor = element.dataset.color;
+}
+
 Accordion.prototype.addActiveClass = function ({ element, className }) {
-    console.log(className);
     element.classList.add(className);
 }
 
@@ -201,25 +202,30 @@ Accordion.prototype.initalizeToggle = function ({ head, title, icon, body }) {
 
 Accordion.prototype.initalizeSwitch = function ({ head, title, icon, body }) {
 
-    let isExpanded = body.dataset.expanded === 'true';
+    const { activeClassNames: { headActiveClassName, titleActiveClassName, iconActiveClassName } } = this.options;
+
+
+    const isExpanded = body.dataset.expanded === 'true';
 
     if (!isExpanded) {
 
         body.dataset.expanded = 'true';
 
-        this.addActiveClass({
-            element: head,
-            className: this.activeClassName.headClassName
-        });
+        this.setBackgroundColor(head);
+
+        // this.addActiveClass({
+        //     element: head,
+        //     className: headActiveClassName
+        // });
 
         this.addActiveClass({
             element: title,
-            className: this.activeClassName.titleClassName
+            className: titleActiveClassName
         });
 
         this.addActiveClass({
             element: icon,
-            className: this.activeClassName.iconClassName
+            className: iconActiveClassName
         });
 
         this.setHeightElement(body);
@@ -230,17 +236,17 @@ Accordion.prototype.initalizeSwitch = function ({ head, title, icon, body }) {
 
         this.removeActiveClass({
             element: head,
-            activeClass: this.activeClassName.headClassName
+            activeClass: headActiveClassName
         });
 
         this.removeActiveClass({
             element: title,
-            activeClass: this.activeClassName.titleClassName
+            activeClass: titleActiveClassName
         });
 
         this.removeActiveClass({
             element: icon,
-            activeClass: this.activeClassName.iconClassName
+            activeClass: iconActiveClassName
         });
 
         this.resetHeightElement(body);

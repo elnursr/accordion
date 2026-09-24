@@ -3,7 +3,7 @@ export function AccordionItem(
         title, icon, description,
         defaults: {
             classNames: { itemClassName, headClassName, titleClassName, iconClassName, bodyClassName, descriptionClassName },
-            dataAttributes: { itemData, headData, titleData, iconData, bodyData, descriptionData,
+            dataAttributes: { itemData, headData, headDataColor, headDataColorValue, titleData, iconData, bodyData, descriptionData,
                 isExpanded }
         }
     }
@@ -11,7 +11,7 @@ export function AccordionItem(
     return (
         `
             <li class="${itemClassName}" data-${itemData}="accItem">
-                <div class="${headClassName}" data-${headData}="accHead">
+                <div class="${headClassName}" data-${headData}="accHead" data-${headDataColor}="${headDataColorValue}">
                     <h1 class="${titleClassName}" data-${titleData}="accTitle">${title}</h1>
                     <span class="${iconClassName}" data-${iconData}="accIcon">
                         <svg viewBox="0 0 24 24">

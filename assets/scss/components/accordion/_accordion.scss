@@ -33,6 +33,10 @@
                 background-image: linear-gradient(to left, #158bd2, #db8e19, #c62017);
             }
         }
+
+        &__active {
+            background-color: #158bd2;
+        }
     }
 
     &__head,

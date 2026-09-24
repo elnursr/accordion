@@ -5,8 +5,13 @@ import Accordion from './accordion/index.js'
 import { AccordionItem } from './components/AccordionItem.js';
 
 let accordion = new Accordion({
-    mode: 'toggle',
-    container: 'accordion'
+    mode: 'switch',
+    container: 'accordion',
+    options:{
+        activeClassNames:{
+            headActiveClassName:'accordion__head__active'
+        }
+    }
 });
 
 accordion.fillUI({
