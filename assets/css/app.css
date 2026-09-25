@@ -67,15 +67,10 @@
 }
 .accordion__head--active {
   background-color: #c62017;
-  background-color: #158bd2;
-  background-color: #db8e19;
 }
 .accordion__head--active[data-head=activeHead] {
   background-image: -webkit-gradient(linear, right top, left top, from(#158bd2), color-stop(#db8e19), to(#c62017));
   background-image: linear-gradient(to left, #158bd2, #db8e19, #c62017);
-}
-.accordion__head__active {
-  background-color: #158bd2;
 }
 .accordion__head, .accordion__description {
   padding: 0.7em;

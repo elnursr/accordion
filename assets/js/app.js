@@ -7,9 +7,9 @@ import { AccordionItem } from './components/AccordionItem.js';
 let accordion = new Accordion({
     mode: 'switch',
     container: 'accordion',
-    options:{
-        activeClassNames:{
-            headActiveClassName:'accordion__head__active'
+    options: {
+        dataAttributes: {
+             headNewColor: 'darkred',
         }
     }
 });

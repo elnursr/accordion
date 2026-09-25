@@ -18,11 +18,16 @@ export default function Accordion({
         dataAttributes: {
             itemData: 'item',
             headData: 'head',
-            headDataColor: 'color',
-            headDataColorValue: '#158bd2',
+            headDefaultColor: 'transparent',
+            headNewColor: '#db8e19',
             titleData: 'title',
+            titleDefaultColor: "#000000",
+            titleNewColor: "#ffffff",
             iconData: 'icon',
+            iconDefaultColor: '#000000',
+            iconNewColor: '#ffffff',
             bodyData: 'body',
+            dataColor: 'color',
             descriptionData: 'description',
             isExpanded: false,
         },
@@ -41,7 +46,11 @@ export default function Accordion({
         }
     };
 
-    this.options = Object.assign({}, this.defaults, options);
+    this.options = {
+        dataAttributes: Object.assign({}, this.defaults.dataAttributes, options.dataAttributes),
+        classNames: Object.assign({}, this.defaults.classNames, options.classNames),
+        activeClassNames: Object.assign({}, this.defaults.activeClassNames, options.activeClassNames)
+    };
 
     this.init();
 }
@@ -78,7 +87,7 @@ Accordion.prototype.switch = function () {
 
     this.container.addEventListener('click', function (e) {
 
-        const headElement = e.target.closest(`.${this.defaults.classNames.headClassName}`);
+        const headElement = e.target.closest(`.${this.options.classNames.headClassName}`);
 
         if (!headElement) return;
 
@@ -87,6 +96,15 @@ Accordion.prototype.switch = function () {
         this.initalizeSwitch(itemELements);
 
     }.bind(this));
+}
+
+Accordion.prototype.changeColorStatus = function ({ element, currentColor, newColor }) {
+
+    if (element.dataset[this.options.dataAttributes.dataColor] !== currentColor) {
+        element.dataset[this.options.dataAttributes.dataColor] = currentColor;
+    } else {
+        element.dataset[this.options.dataAttributes.dataColor] = newColor;
+    }
 }
 
 Accordion.prototype.getItemElements = function (headElement) {
@@ -134,6 +152,10 @@ Accordion.prototype.resetHeightElements = function (bodyElements) {
     for (let i = 0; i < bodyElements.length; i++) {
         bodyElements[i].style.height = '0px';
     }
+}
+
+Accordion.prototype.setColor = function (element) {
+    element.style.color = element.dataset.color;
 }
 
 Accordion.prototype.setBackgroundColor = function (element) {
@@ -202,8 +224,29 @@ Accordion.prototype.initalizeToggle = function ({ head, title, icon, body }) {
 
 Accordion.prototype.initalizeSwitch = function ({ head, title, icon, body }) {
 
-    const { activeClassNames: { headActiveClassName, titleActiveClassName, iconActiveClassName } } = this.options;
+    this.changeColorStatus({
+        element: head,
+        currentColor: this.options.dataAttributes.headDefaultColor,
+        newColor: this.options.dataAttributes.headNewColor
+    });
 
+    this.changeColorStatus({
+        element: title,
+        currentColor: this.options.dataAttributes.titleDefaultColor,
+        newColor: this.options.dataAttributes.titleNewColor
+    });
+
+    this.changeColorStatus({
+        element: icon,
+        currentColor: this.options.dataAttributes.iconDefaultColor,
+        newColor: this.options.dataAttributes.iconNewColor
+    });
+
+    this.setBackgroundColor(head);
+
+    this.setColor(title);
+
+    this.setColor(icon);
 
     const isExpanded = body.dataset.expanded === 'true';
 
@@ -211,43 +254,11 @@ Accordion.prototype.initalizeSwitch = function ({ head, title, icon, body }) {
 
         body.dataset.expanded = 'true';
 
-        this.setBackgroundColor(head);
-
-        // this.addActiveClass({
-        //     element: head,
-        //     className: headActiveClassName
-        // });
-
-        this.addActiveClass({
-            element: title,
-            className: titleActiveClassName
-        });
-
-        this.addActiveClass({
-            element: icon,
-            className: iconActiveClassName
-        });
-
         this.setHeightElement(body);
     }
     else {
 
         body.dataset.expanded = 'false';
-
-        this.removeActiveClass({
-            element: head,
-            activeClass: headActiveClassName
-        });
-
-        this.removeActiveClass({
-            element: title,
-            activeClass: titleActiveClassName
-        });
-
-        this.removeActiveClass({
-            element: icon,
-            activeClass: iconActiveClassName
-        });
 
         this.resetHeightElement(body);
     }
