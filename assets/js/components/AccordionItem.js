@@ -2,25 +2,25 @@ export function AccordionItem(
     {
         title, icon, description,
         defaults: {
-            classNames: { itemClassName, headClassName, titleClassName, iconClassName, bodyClassName, descriptionClassName },
-            dataAttributes: { itemData, headData, dataColor, headDefaultColor, titleData, titleDefaultColor, iconData, iconDefaultColor, bodyData, descriptionData,
-                isExpanded }
+            attributes: { isExpanded },
+            colors: { head: { collapsed: headColor }, title: { collapsed: titleColor }, icon: { collapsed: iconColor } },
+            classNames: { item: itemClass, head: headClass, title: titleClass, icon: iconClass, body: bodyClass, description: descriptionClass }
         }
     }
 ) {
     return (
         `
-            <li class="${itemClassName}" data-${itemData}="accItem">
-                <div class="${headClassName}" data-${headData}="accHead" data-${dataColor}="${headDefaultColor}">
-                    <h1 class="${titleClassName}" data-${titleData}="accTitle" data-${dataColor}="${titleDefaultColor}">${title}</h1>
-                    <span class="${iconClassName}" data-${iconData}="accIcon" data-${dataColor}="${iconDefaultColor}">
+            <li class="${itemClass}" data-accordion-item="accItem">
+                <div class="${headClass}" data-accordion-head="accHead" data-accordion-color="${headColor}">
+                    <h1 class="${titleClass}" data-accordion-title="accTitle" data-accordion-color="${titleColor}">${title}</h1>
+                    <span class="${iconClass}" data-accordion-icon="accIcon" data-accordion-color="${iconColor}">
                         <svg viewBox="0 0 24 24">
                             <use href="assets/media/svg/icons.svg#icon-${icon}"></use>
                         </svg>
                     </span>
                 </div>
-                <div class="${bodyClassName}" data-expanded="${isExpanded}" data-${bodyData}="accBody">
-                    <p class="${descriptionClassName}" data-${descriptionData}="accDescription">${description}</p>
+                <div class="${bodyClass}" data-accordion-body="accBody" data-accordion-expanded="${isExpanded}" >
+                    <p class="${descriptionClass}" data-accordion-description="accDescription">${description}</p>
                 </div>
             </li>
         `
