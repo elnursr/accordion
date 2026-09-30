@@ -5,8 +5,8 @@ import Accordion from './accordion/index.js'
 import { AccordionItem } from './components/AccordionItem.js';
 
 let accordion = new Accordion({
-    mode: 'toggle',
-    wrapper: 'accordion'
+    mode: 'switch',
+    wrapper: '.accordion'
 });
 
 accordion.fillUI({

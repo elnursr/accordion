@@ -28,10 +28,6 @@
             background-color: #c62017;
             // background-color: #158bd2;
             // background-color: #db8e19;
-
-            &[data-head="activeHead"] {
-                background-image: linear-gradient(to left, #158bd2, #db8e19, #c62017);
-            }
         }
     }
 
@@ -59,7 +55,7 @@
         display: inline-block;
         width: 1.8em;
         height: 1.8em;
-        transition: color .5s;
+        transition: color .5s, transform .3s;
 
         svg {
             width: 100%;
@@ -68,15 +64,11 @@
             stroke-width: .1em;
             stroke-linecap: round;
             stroke-linejoin: round;
-            transition: transform .3s;
+            // transition: transform .3s;
         }
 
         &--active {
             color: rgb(255, 255, 255);
-
-            svg {
-                transform: rotate(-225deg);
-            }
         }
     }
 }

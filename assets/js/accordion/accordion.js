@@ -1,13 +1,32 @@
 export default function Accordion({
-    // destructuring
     mode = 'switch',
     wrapper = '',
     options = {},
 } = {}) {
 
-    // constructor
+    let _wrapper = null;
+
+    Object.defineProperty(this, 'wrapper', {
+        get() {
+            return _wrapper;
+        },
+        set(value) {
+            if (typeof value === 'string' && value.trim() !== '') {
+                _wrapper = document.querySelector(value);
+            }
+            else {
+                _wrapper = value;
+            }
+            if (!_wrapper) {
+                console.log(`Accordion ${value} not found!`);
+            }
+        },
+        configurable: true,
+        enumerable: true
+    });
+
     this.mode = mode;
-    this.wrapper = typeof wrapper === 'string' ? document.querySelector(wrapper.startsWith('.') ? wrapper : `.${wrapper}`) : wrapper;
+    this.wrapper = wrapper;
 
     this.defaults = {
 
@@ -21,6 +40,7 @@ export default function Accordion({
             description: 'accordion-description',
             color: 'accordion-color',
         },
+
         classNames: {
             item: 'accordion__item',
             head: 'accordion__head',
@@ -29,6 +49,7 @@ export default function Accordion({
             body: 'accordion__body',
             description: 'accordion__description',
         },
+
         colors: {
             head: {
                 collapsed: 'transparent',
@@ -51,53 +72,36 @@ export default function Accordion({
         classNames: Object.assign({}, this.defaults.classNames, options.classNames)
     };
 
-    this.init();
+    if (this.wrapper) {
+        this.init();
+    }
+}
+
+Accordion.prototype.init = function () {
+    this.dispatchAction();
 }
 
 Accordion.prototype.selectElement = function (element) {
     return document.querySelector(element);
 }
 
-Accordion.prototype.init = function () {
-    if (this.mode === 'toggle') {
-        this.toggle();
-    }
-    else {
-        this.switch();
-    }
-}
-
-Accordion.prototype.toggle = function () {
+Accordion.prototype.dispatchAction = function () {
 
     this.wrapper.addEventListener('click', function (e) {
+        const itemElements = this.getItemElements(e);
 
-        const headElement = e.target.closest(`.${this.options.classNames.head}`);
+        if (!itemElements) return;
 
-        if (!headElement) return;
-
-        const itemELements = this.getItemElements(headElement);
-
-        this.initializeToggle(itemELements);
-
-    }.bind(this));
-}
-
-Accordion.prototype.switch = function () {
-
-    this.wrapper.addEventListener('click', function (e) {
-
-        const headElement = e.target.closest(`.${this.options.classNames.head}`);
-
-        if (!headElement) return;
-
-        const itemELements = this.getItemElements(headElement);
-
-        this.initializeSwitch(itemELements);
-
+        if (this.mode === 'toggle') {
+            this.initializeToggle(itemElements)
+        } else {
+            this.initializeSwitch(itemElements)
+        }
     }.bind(this));
 }
 
 Accordion.prototype.changeColorStatus = function ({ element, collapsedColor, expandedColor }) {
+    if (!element) return;
     if (element.getAttribute(`data-${this.options.attributes.color}`) !== collapsedColor) {
         element.setAttribute(`data-${this.options.attributes.color}`, collapsedColor);
     }
@@ -106,11 +110,19 @@ Accordion.prototype.changeColorStatus = function ({ element, collapsedColor, exp
     }
 }
 
-Accordion.prototype.getItemElements = function (headElement) {
+Accordion.prototype.setIconDegree = function ({ icon, value }) {
+    icon.style.transform = `rotate(${value}deg)`;
+}
+
+Accordion.prototype.getItemElements = function (event) {
+
+    const headElement = event.target.closest(`.${this.options.classNames.head}`);
+
+    if (!headElement) return undefined;
 
     const itemElement = headElement.closest(`[data-${this.options.attributes.item}]`);
 
-    if (!itemElement) return null;
+    if (!itemElement) return undefined;
 
     return {
         item: itemElement,
@@ -132,7 +144,14 @@ Accordion.prototype.fillUI = function ({ accordionDataItems, accordionItem }) {
         renderedHTML += accordionItem({ title, icon, description, defaults });
     }
 
+    if (!this.wrapper) return;
+
     this.wrapper.innerHTML = renderedHTML;
+}
+
+
+Accordion.prototype.checkDOM = function (domElement) {
+    if (!domElement) return;
 }
 
 Accordion.prototype.getCollapsedHeight = function (elementHeight) {
@@ -211,6 +230,11 @@ Accordion.prototype.initializeToggle = function ({ head, title, icon, body }) {
             expandedColor: this.options.colors.icon.expanded
         });
 
+        this.setIconDegree({
+            icon: iconElements[i],
+            value: '0'
+        });
+
         this.setBackgroundColor(headElements[i]);
         this.setColor(titleElements[i]);
         this.setColor(iconElements[i]);
@@ -232,6 +256,11 @@ Accordion.prototype.initializeToggle = function ({ head, title, icon, body }) {
         element: icon,
         collapsedColor: this.options.colors.icon.collapsed,
         expandedColor: this.options.colors.icon.expanded
+    });
+
+    this.setIconDegree({
+        icon,
+        value: '-225'
     });
 
     this.setBackgroundColor(head);
@@ -275,9 +304,19 @@ Accordion.prototype.initializeSwitch = function ({ head, title, icon, body }) {
 
         body.dataset.accordionExpanded = 'true';
 
+        this.setIconDegree({
+            icon,
+            value: '-225'
+        });
+
         this.setHeightElement(body);
     }
     else {
+
+        this.setIconDegree({
+            icon,
+            value: '0'
+        });
 
         body.dataset.accordionExpanded = 'false';
 
