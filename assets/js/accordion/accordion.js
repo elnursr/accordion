@@ -81,59 +81,23 @@ Accordion.prototype.init = function () {
     this.dispatchAction();
 }
 
-Accordion.prototype.selectElement = function (element) {
-    return document.querySelector(element);
-}
-
-Accordion.prototype.dispatchAction = function () {
-
-    this.wrapper.addEventListener('click', function (e) {
-        const itemElements = this.getItemElements(e);
-
-        if (!itemElements) return;
-
-        if (this.mode === 'toggle') {
-            this.initializeToggle(itemElements)
-        } else {
-            this.initializeSwitch(itemElements)
-        }
-    }.bind(this));
-}
-
-Accordion.prototype.changeColorStatus = function ({ element, collapsedColor, expandedColor }) {
-    if (!element) return;
-    if (element.getAttribute(`data-${this.options.attributes.color}`) !== collapsedColor) {
-        element.setAttribute(`data-${this.options.attributes.color}`, collapsedColor);
+Accordion.prototype.selectElement = function (queryString) {
+    if (!this.wrapper || typeof queryString !== 'string') {
+        return null;
     }
-    else {
-        element.setAttribute(`data-${this.options.attributes.color}`, expandedColor);
-    }
+    return this.wrapper.querySelector(queryString);
 }
 
-Accordion.prototype.setIconDegree = function ({ icon, value }) {
+Accordion.prototype.setIconDegree = function ({ icon, value = '0' } = {}) {
+    if (!icon) return;
     icon.style.transform = `rotate(${value}deg)`;
 }
 
-Accordion.prototype.getItemElements = function (event) {
+Accordion.prototype.fillUI = function ({ accordionDataItems, accordionItem } = {}) {
 
-    const headElement = event.target.closest(`.${this.options.classNames.head}`);
-
-    if (!headElement) return undefined;
-
-    const itemElement = headElement.closest(`[data-${this.options.attributes.item}]`);
-
-    if (!itemElement) return undefined;
-
-    return {
-        item: itemElement,
-        head: headElement,
-        title: itemElement.querySelector(`[data-${this.options.attributes.title}]`),
-        icon: itemElement.querySelector(`[data-${this.options.attributes.icon}]`),
-        body: itemElement.querySelector(`[data-${this.options.attributes.body}]`)
-    };
-}
-
-Accordion.prototype.fillUI = function ({ accordionDataItems, accordionItem }) {
+    if (!this.wrapper || !Array.isArray(accordionDataItems) || typeof accordionItem !== 'function') {
+        return null;
+    }
 
     let renderedHTML = '';
 
@@ -144,27 +108,70 @@ Accordion.prototype.fillUI = function ({ accordionDataItems, accordionItem }) {
         renderedHTML += accordionItem({ title, icon, description, defaults });
     }
 
-    if (!this.wrapper) return;
-
     this.wrapper.innerHTML = renderedHTML;
 }
 
+Accordion.prototype.getItemElements = function (event) {
 
-Accordion.prototype.checkDOM = function (domElement) {
-    if (!domElement) return;
+    const headElement = event.target.closest(`.${this.options.classNames.head}`);
+
+    if (!headElement) return null;
+
+    const itemElement = headElement.closest(`[data-${this.options.attributes.item}]`);
+
+    if (!itemElement) return null;
+
+    return {
+        item: itemElement,
+        head: headElement,
+        title: itemElement.querySelector(`[data-${this.options.attributes.title}]`),
+        icon: itemElement.querySelector(`[data-${this.options.attributes.icon}]`),
+        body: itemElement.querySelector(`[data-${this.options.attributes.body}]`)
+    };
 }
 
-Accordion.prototype.getCollapsedHeight = function (elementHeight) {
-    this.collapsedHeight = elementHeight.scrollHeight;
-    return this.collapsedHeight;
+Accordion.prototype.dispatchAction = function () {
+
+    this.wrapper.addEventListener('click', function (e) {
+
+        this.wrapper._isExpanded = !this.wrapper._isExpanded;
+
+        const itemElements = this.getItemElements(e);
+
+        if (!itemElements) return;
+
+        if (this.mode === 'toggle') {
+            this.initializeToggle({
+                items: itemElements,
+                isExpanded: this.wrapper._isExpanded
+            });
+        } else {
+            this.initializeSwitch({
+                items: itemElements,
+                isExpanded: this.wrapper._isExpanded
+            });
+        }
+    }.bind(this));
 }
 
-Accordion.prototype.setHeightElement = function (bodyElement) {
-    bodyElement.style.height = bodyElement.scrollHeight + 'px';
+Accordion.prototype.changeColorStatus = function ({ element, collapsedColor, expandedColor } = {}) {
+    if (!element) return;
+    if (element.getAttribute(`data-${this.options.attributes.color}`) !== collapsedColor) {
+        element.setAttribute(`data-${this.options.attributes.color}`, collapsedColor);
+    }
+    else {
+        element.setAttribute(`data-${this.options.attributes.color}`, expandedColor);
+    }
 }
 
-Accordion.prototype.resetHeightElement = function (bodyElement) {
-    bodyElement.style.height = '0px';
+Accordion.prototype.setHeightElement = function (element) {
+    if (!element) return null;
+    element.style.height = `${element.scrollHeight}px`;
+}
+
+Accordion.prototype.resetHeightElement = function (element) {
+    if (!element) return null;
+    element.style.height = '0px';
 }
 
 Accordion.prototype.resetHeightElements = function (bodyElements) {
@@ -173,12 +180,12 @@ Accordion.prototype.resetHeightElements = function (bodyElements) {
     }
 }
 
-Accordion.prototype.setColor = function (element) {
-    element.style.color = element.getAttribute(`data-${this.options.attributes.color}`);
-}
-
 Accordion.prototype.setBackgroundColor = function (element) {
-    element.style.backgroundColor = element.getAttribute(`data-${this.options.attributes.color}`);
+    if (!element) return null;
+    const backgroundColor = element.getAttribute(`data-${this.options.attributes.color}`);
+    if (backgroundColor) {
+        element.style.backgroundColor = backgroundColor;
+    }
 }
 
 Accordion.prototype.addActiveClass = function ({ element, className }) {
@@ -199,10 +206,10 @@ Accordion.prototype.removeActiveClasses = function ({ elements, activeClass }) {
 
 Accordion.prototype.initializeToggle = function ({ head, title, icon, body }) {
 
-    const headElements = document.querySelectorAll(`[data-${this.options.attributes.head}]`),
-        titleElements = document.querySelectorAll(`[data-${this.options.attributes.title}]`),
-        iconElements = document.querySelectorAll(`[data-${this.options.attributes.icon}]`),
-        bodyElements = document.querySelectorAll(`[data-${this.options.attributes.body}]`);
+    const headElements = this.wrapper.querySelectorAll(`[data-${this.options.attributes.head}]`),
+        titleElements = this.wrapper.querySelectorAll(`[data-${this.options.attributes.title}]`),
+        iconElements = this.wrapper.querySelectorAll(`[data-${this.options.attributes.icon}]`),
+        bodyElements = this.wrapper.querySelectorAll(`[data-${this.options.attributes.body}]`);
 
     this.resetHeightElements(bodyElements);
 
@@ -231,8 +238,7 @@ Accordion.prototype.initializeToggle = function ({ head, title, icon, body }) {
         });
 
         this.setIconDegree({
-            icon: iconElements[i],
-            value: '0'
+            icon: iconElements[i]
         });
 
         this.setBackgroundColor(headElements[i]);
@@ -272,7 +278,19 @@ Accordion.prototype.initializeToggle = function ({ head, title, icon, body }) {
     this.setHeightElement(body);
 }
 
-Accordion.prototype.initializeSwitch = function ({ head, title, icon, body }) {
+Accordion.prototype.setColor = function ({ element, type, isExpanded } = {}) {
+    if (!element) return null;
+
+    const configColor = this.options.colors?.[type];
+
+    if (!configColor) return null;
+
+    console.log(isExpanded);
+
+    element.style.color = isExpanded ? configColor.expanded : configColor.collapsed;
+}
+
+Accordion.prototype.initializeSwitch = function ({ items: { head, title, icon, body }, isExpanded } = {}) {
 
     this.changeColorStatus({
         element: head,
@@ -280,11 +298,11 @@ Accordion.prototype.initializeSwitch = function ({ head, title, icon, body }) {
         expandedColor: this.options.colors.head.expanded
     });
 
-    this.changeColorStatus({
-        element: title,
-        collapsedColor: this.options.colors.title.collapsed,
-        expandedColor: this.options.colors.title.expanded
-    });
+    // this.changeColorStatus({
+    //     element: title,
+    //     collapsedColor: this.options.colors.title.collapsed,
+    //     expandedColor: this.options.colors.title.expanded
+    // });
 
     this.changeColorStatus({
         element: icon,
@@ -294,15 +312,21 @@ Accordion.prototype.initializeSwitch = function ({ head, title, icon, body }) {
 
     this.setBackgroundColor(head);
 
-    this.setColor(title);
+    // this.setColor(title);
 
     this.setColor(icon);
 
-    const isExpanded = body.dataset.accordionExpanded === 'true';
+    // const isExpanded = body.dataset.accordionExpanded === 'true';
 
-    if (!isExpanded) {
+    this.setColor({
+        element: title,
+        type: 'title',
+        isExpanded: isExpanded
+    });
 
-        body.dataset.accordionExpanded = 'true';
+    if (isExpanded) {
+
+        // body.dataset.accordionExpanded = 'true';
 
         this.setIconDegree({
             icon,
@@ -313,13 +337,9 @@ Accordion.prototype.initializeSwitch = function ({ head, title, icon, body }) {
     }
     else {
 
-        this.setIconDegree({
-            icon,
-            value: '0'
-        });
+        // body.dataset.accordionExpanded = 'false';
 
-        body.dataset.accordionExpanded = 'false';
-
+        this.setIconDegree({ icon });
         this.resetHeightElement(body);
     }
 }
