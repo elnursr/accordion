@@ -1,5 +1,6 @@
 export function AccordionItem(
     {
+        index,
         title, icon, description,
         defaults: {
             attributes: { isExpanded },
@@ -10,7 +11,7 @@ export function AccordionItem(
 ) {
     return (
         `
-            <li class="${itemClass}" data-accordion-item="accItem">
+            <li class="${itemClass}" data-accordion-item="accItem" data-accordion-index="${index}">
                 <div class="${headClass}" data-accordion-head="accHead" data-accordion-color="${headColor}">
                     <h1 class="${titleClass}" data-accordion-title="accTitle" data-accordion-color="${titleColor}">${title}</h1>
                     <span class="${iconClass}" data-accordion-icon="accIcon" data-accordion-color="${iconColor}">
@@ -19,7 +20,7 @@ export function AccordionItem(
                         </svg>
                     </span>
                 </div>
-                <div class="${bodyClass}" data-accordion-body="accBody" data-accordion-expanded="${isExpanded}" >
+                <div class="${bodyClass}" aria-expanded="${isExpanded}" data-accordion-body="accBody">
                     <p class="${descriptionClass}" data-accordion-description="accDescription">${description}</p>
                 </div>
             </li>

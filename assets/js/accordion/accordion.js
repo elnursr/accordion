@@ -26,6 +26,7 @@ export default function Accordion({
     });
 
     this.mode = mode;
+    this.state = {};
     this.wrapper = wrapper;
 
     this.defaults = {
@@ -98,14 +99,21 @@ Accordion.prototype.fillUI = function ({ accordionDataItems, accordionItem } = {
     if (!this.wrapper || !Array.isArray(accordionDataItems) || typeof accordionItem !== 'function') {
         return null;
     }
-
+    let index = 0;
     let renderedHTML = '';
 
     const defaults = this.options;
 
+
     for (let i = 0; i < accordionDataItems.length; i++) {
+
         let { title, icon, description } = accordionDataItems[i];
-        renderedHTML += accordionItem({ title, icon, description, defaults });
+
+        this.state[i] = this.options.attributes.isExpanded;
+
+        index = i;
+
+        renderedHTML += accordionItem({ title, icon, description, defaults, index });
     }
 
     this.wrapper.innerHTML = renderedHTML;
@@ -134,8 +142,6 @@ Accordion.prototype.dispatchAction = function () {
 
     this.wrapper.addEventListener('click', function (e) {
 
-        this.wrapper._isExpanded = !this.wrapper._isExpanded;
-
         const itemElements = this.getItemElements(e);
 
         if (!itemElements) return;
@@ -147,8 +153,7 @@ Accordion.prototype.dispatchAction = function () {
             });
         } else {
             this.initializeSwitch({
-                items: itemElements,
-                isExpanded: this.wrapper._isExpanded
+                items: itemElements
             });
         }
     }.bind(this));
@@ -285,12 +290,12 @@ Accordion.prototype.setColor = function ({ element, type, isExpanded } = {}) {
 
     if (!configColor) return null;
 
-    console.log(isExpanded);
-
     element.style.color = isExpanded ? configColor.expanded : configColor.collapsed;
 }
 
-Accordion.prototype.initializeSwitch = function ({ items: { head, title, icon, body }, isExpanded } = {}) {
+Accordion.prototype.initializeSwitch = function ({ items: { item, head, title, icon, body } } = {}) {
+
+    this.state[item.dataset.accordionIndex] = !this.state[item.dataset.accordionIndex];
 
     this.changeColorStatus({
         element: head,
@@ -298,11 +303,11 @@ Accordion.prototype.initializeSwitch = function ({ items: { head, title, icon, b
         expandedColor: this.options.colors.head.expanded
     });
 
-    // this.changeColorStatus({
-    //     element: title,
-    //     collapsedColor: this.options.colors.title.collapsed,
-    //     expandedColor: this.options.colors.title.expanded
-    // });
+    this.changeColorStatus({
+        element: title,
+        collapsedColor: this.options.colors.title.collapsed,
+        expandedColor: this.options.colors.title.expanded
+    });
 
     this.changeColorStatus({
         element: icon,
@@ -312,21 +317,19 @@ Accordion.prototype.initializeSwitch = function ({ items: { head, title, icon, b
 
     this.setBackgroundColor(head);
 
-    // this.setColor(title);
-
-    this.setColor(icon);
-
-    // const isExpanded = body.dataset.accordionExpanded === 'true';
-
     this.setColor({
         element: title,
         type: 'title',
-        isExpanded: isExpanded
+        isExpanded: this.state[item.dataset.accordionIndex]
     });
 
-    if (isExpanded) {
+    this.setColor({
+        element: icon,
+        type: 'icon',
+        isExpanded: this.state[item.dataset.accordionIndex]
+    });
 
-        // body.dataset.accordionExpanded = 'true';
+    if (this.state[item.dataset.accordionIndex]) {
 
         this.setIconDegree({
             icon,
@@ -336,8 +339,6 @@ Accordion.prototype.initializeSwitch = function ({ items: { head, title, icon, b
         this.setHeightElement(body);
     }
     else {
-
-        // body.dataset.accordionExpanded = 'false';
 
         this.setIconDegree({ icon });
         this.resetHeightElement(body);
