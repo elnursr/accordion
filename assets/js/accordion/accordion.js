@@ -21,8 +21,8 @@ export default function Accordion({
                 console.log(`Accordion ${value} not found!`);
             }
         },
-        configurable: true,
-        enumerable: true
+        enumerable: true,
+        configurable: true
     });
 
     this.mode = mode;
@@ -189,39 +189,48 @@ Accordion.prototype.removeActiveClasses = function ({ elements, activeClass }) {
     }
 }
 
-Accordion.prototype.initializeToggle = function ({ item, head, title, icon, body }) {
+Accordion.prototype.initializeToggle = function (accordions) {
 
-    // const headElements = this.wrapper.querySelectorAll(`[data-${this.options.attributes.head}]`),
-    //     titleElements = this.wrapper.querySelectorAll(`[data-${this.options.attributes.title}]`),
-    //     iconElements = this.wrapper.querySelectorAll(`[data-${this.options.attributes.icon}]`),
-    //     bodyElements = this.wrapper.querySelectorAll(`[data-${this.options.attributes.body}]`);
+    const clickedIndex = Number(accordions.item.dataset.accordionIndex);
 
-    const itemElements = this.wrapper.querySelectorAll(`[data-${this.options.attributes.item}]`);
+    const activeIndex = Object.keys(this.state);
 
-    for (let i = 0; i < itemElements.length; i++) {
-        this.state[itemElements[i].dataset.accordionIndex] = !this.state[itemElements[i].dataset.accordionIndex];
-    }
+    // const isExpanded = clickedIndex ? activeIndex : false;
 
-    // this.state[item.dataset.accordionIndex] = !this.state[item.dataset.accordionIndex];
+    // this.updateItemUI({ accordions, isExpanded });
+}
+
+Accordion.prototype.initializeSwitch = function (accordions) {
+
+    const index = Number(accordions.item.dataset.accordionIndex);
+
+    this.state[index] = !this.state[index];
+
+    const isExpanded = this.state[index];
+
+    this.updateItemUI({ accordions, isExpanded });
+}
+
+Accordion.prototype.updateItemUI = function ({ accordions: { head, title, icon, body }, isExpanded } = {}) {
 
     const colorTargets = [
         {
             element: head,
             elementType: 'head',
             styleType: 'backgroundColor',
-            isExpanded: this.state[item.dataset.accordionIndex]
+            isExpanded: isExpanded
         },
         {
             element: title,
             elementType: 'title',
             styleType: 'color',
-            isExpanded: this.state[item.dataset.accordionIndex]
+            isExpanded: isExpanded
         },
         {
             element: icon,
             elementType: 'icon',
             styleType: 'color',
-            isExpanded: this.state[item.dataset.accordionIndex]
+            isExpanded: isExpanded
         }
     ];
 
@@ -229,53 +238,11 @@ Accordion.prototype.initializeToggle = function ({ item, head, title, icon, body
 
     this.setHeightElement({
         element: body,
-        isExpanded: this.state[item.dataset.accordionIndex]
+        isExpanded: isExpanded
     });
 
     this.setIconDegree({
         element: icon,
-        isExpanded: this.state[item.dataset.accordionIndex]
-    });
-}
-
-Accordion.prototype.initializeSwitch = function () {
-    this.updateUI();
-}
-
-Accordion.prototype.updateItemUI = function ({ item, head, title, icon, body } = {}) {
-
-    this.state[item.dataset.accordionIndex] = !this.state[item.dataset.accordionIndex];
-
-    const colorTargets = [
-        {
-            element: head,
-            elementType: 'head',
-            styleType: 'backgroundColor',
-            isExpanded: this.state[item.dataset.accordionIndex]
-        },
-        {
-            element: title,
-            elementType: 'title',
-            styleType: 'color',
-            isExpanded: this.state[item.dataset.accordionIndex]
-        },
-        {
-            element: icon,
-            elementType: 'icon',
-            styleType: 'color',
-            isExpanded: this.state[item.dataset.accordionIndex]
-        }
-    ];
-
-    this.setColor(colorTargets);
-
-    this.setHeightElement({
-        element: body,
-        isExpanded: this.state[item.dataset.accordionIndex]
-    });
-
-    this.setIconDegree({
-        element: icon,
-        isExpanded: this.state[item.dataset.accordionIndex]
+        isExpanded: isExpanded
     });
 }
