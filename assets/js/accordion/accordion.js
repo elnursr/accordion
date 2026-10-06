@@ -89,9 +89,9 @@ Accordion.prototype.selectElement = function (queryString) {
     return this.wrapper.querySelector(queryString);
 }
 
-Accordion.prototype.setIconDegree = function ({ icon, value = '0' } = {}) {
-    if (!icon) return;
-    icon.style.transform = `rotate(${value}deg)`;
+Accordion.prototype.setIconDegree = function ({ element, value, isExpanded } = {}) {
+    if (!element) return;
+    element.style.transform = isExpanded ? 'rotate(-225deg)' : 'rotate(0deg)';
 }
 
 Accordion.prototype.fillUI = function ({ accordionDataItems, accordionItem } = {}) {
@@ -99,11 +99,11 @@ Accordion.prototype.fillUI = function ({ accordionDataItems, accordionItem } = {
     if (!this.wrapper || !Array.isArray(accordionDataItems) || typeof accordionItem !== 'function') {
         return null;
     }
+
     let index = 0;
     let renderedHTML = '';
 
     const defaults = this.options;
-
 
     for (let i = 0; i < accordionDataItems.length; i++) {
 
@@ -147,36 +147,16 @@ Accordion.prototype.dispatchAction = function () {
         if (!itemElements) return;
 
         if (this.mode === 'toggle') {
-            this.initializeToggle({
-                items: itemElements,
-                isExpanded: this.wrapper._isExpanded
-            });
+            this.initializeToggle(itemElements);
         } else {
-            this.initializeSwitch({
-                items: itemElements
-            });
+            this.initializeSwitch(itemElements);
         }
     }.bind(this));
 }
 
-Accordion.prototype.changeColorStatus = function ({ element, collapsedColor, expandedColor } = {}) {
-    if (!element) return;
-    if (element.getAttribute(`data-${this.options.attributes.color}`) !== collapsedColor) {
-        element.setAttribute(`data-${this.options.attributes.color}`, collapsedColor);
-    }
-    else {
-        element.setAttribute(`data-${this.options.attributes.color}`, expandedColor);
-    }
-}
-
-Accordion.prototype.setHeightElement = function (element) {
+Accordion.prototype.setHeightElement = function ({ element, isExpanded } = {}) {
     if (!element) return null;
-    element.style.height = `${element.scrollHeight}px`;
-}
-
-Accordion.prototype.resetHeightElement = function (element) {
-    if (!element) return null;
-    element.style.height = '0px';
+    element.style.height = isExpanded ? `${element.scrollHeight}px` : '0px';
 }
 
 Accordion.prototype.resetHeightElements = function (bodyElements) {
@@ -185,20 +165,20 @@ Accordion.prototype.resetHeightElements = function (bodyElements) {
     }
 }
 
-Accordion.prototype.setBackgroundColor = function (element) {
-    if (!element) return null;
-    const backgroundColor = element.getAttribute(`data-${this.options.attributes.color}`);
-    if (backgroundColor) {
-        element.style.backgroundColor = backgroundColor;
-    }
-}
+Accordion.prototype.setColor = function (items) {
 
-Accordion.prototype.addActiveClass = function ({ element, className }) {
-    element.classList.add(className);
-}
+    if (!items) return null;
 
-Accordion.prototype.removeActiveClass = function ({ element, activeClass }) {
-    element.classList.remove(activeClass);
+    items.forEach((item) => {
+
+        const { element, elementType, styleType, isExpanded } = item;
+
+        const configColor = this.options.colors?.[elementType];
+
+        if (!configColor) return null;
+
+        element.style[styleType] = isExpanded ? configColor.expanded : configColor.collapsed;
+    });
 }
 
 Accordion.prototype.removeActiveClasses = function ({ elements, activeClass }) {
@@ -209,138 +189,93 @@ Accordion.prototype.removeActiveClasses = function ({ elements, activeClass }) {
     }
 }
 
-Accordion.prototype.initializeToggle = function ({ head, title, icon, body }) {
+Accordion.prototype.initializeToggle = function ({ item, head, title, icon, body }) {
 
-    const headElements = this.wrapper.querySelectorAll(`[data-${this.options.attributes.head}]`),
-        titleElements = this.wrapper.querySelectorAll(`[data-${this.options.attributes.title}]`),
-        iconElements = this.wrapper.querySelectorAll(`[data-${this.options.attributes.icon}]`),
-        bodyElements = this.wrapper.querySelectorAll(`[data-${this.options.attributes.body}]`);
+    // const headElements = this.wrapper.querySelectorAll(`[data-${this.options.attributes.head}]`),
+    //     titleElements = this.wrapper.querySelectorAll(`[data-${this.options.attributes.title}]`),
+    //     iconElements = this.wrapper.querySelectorAll(`[data-${this.options.attributes.icon}]`),
+    //     bodyElements = this.wrapper.querySelectorAll(`[data-${this.options.attributes.body}]`);
 
-    this.resetHeightElements(bodyElements);
+    const itemElements = this.wrapper.querySelectorAll(`[data-${this.options.attributes.item}]`);
 
-
-    for (let i = 0; i < headElements.length; i++) {
-
-        headElements[i].setAttribute(`data-${this.options.attributes.color}`, '');
-        titleElements[i].setAttribute(`data-${this.options.attributes.color}`, '');
-        iconElements[i].setAttribute(`data-${this.options.attributes.color}`, '');
-
-        this.changeColorStatus({
-            element: headElements[i],
-            collapsedColor: this.options.colors.head.collapsed,
-            expandedColor: this.options.colors.head.expanded
-        });
-        this.changeColorStatus({
-            element: titleElements[i],
-            collapsedColor: this.options.colors.title.collapsed,
-            expandedColor: this.options.colors.title.expanded
-        });
-
-        this.changeColorStatus({
-            element: iconElements[i],
-            collapsedColor: this.options.colors.icon.collapsed,
-            expandedColor: this.options.colors.icon.expanded
-        });
-
-        this.setIconDegree({
-            icon: iconElements[i]
-        });
-
-        this.setBackgroundColor(headElements[i]);
-        this.setColor(titleElements[i]);
-        this.setColor(iconElements[i]);
+    for (let i = 0; i < itemElements.length; i++) {
+        this.state[itemElements[i].dataset.accordionIndex] = !this.state[itemElements[i].dataset.accordionIndex];
     }
 
-    this.changeColorStatus({
-        element: head,
-        collapsedColor: this.options.colors.head.collapsed,
-        expandedColor: this.options.colors.head.expanded
-    });
+    // this.state[item.dataset.accordionIndex] = !this.state[item.dataset.accordionIndex];
 
-    this.changeColorStatus({
-        element: title,
-        collapsedColor: this.options.colors.title.collapsed,
-        expandedColor: this.options.colors.title.expanded
-    });
+    const colorTargets = [
+        {
+            element: head,
+            elementType: 'head',
+            styleType: 'backgroundColor',
+            isExpanded: this.state[item.dataset.accordionIndex]
+        },
+        {
+            element: title,
+            elementType: 'title',
+            styleType: 'color',
+            isExpanded: this.state[item.dataset.accordionIndex]
+        },
+        {
+            element: icon,
+            elementType: 'icon',
+            styleType: 'color',
+            isExpanded: this.state[item.dataset.accordionIndex]
+        }
+    ];
 
-    this.changeColorStatus({
-        element: icon,
-        collapsedColor: this.options.colors.icon.collapsed,
-        expandedColor: this.options.colors.icon.expanded
+    this.setColor(colorTargets);
+
+    this.setHeightElement({
+        element: body,
+        isExpanded: this.state[item.dataset.accordionIndex]
     });
 
     this.setIconDegree({
-        icon,
-        value: '-225'
+        element: icon,
+        isExpanded: this.state[item.dataset.accordionIndex]
     });
-
-    this.setBackgroundColor(head);
-
-    this.setColor(title);
-
-    this.setColor(icon);
-
-    this.setHeightElement(body);
 }
 
-Accordion.prototype.setColor = function ({ element, type, isExpanded } = {}) {
-    if (!element) return null;
-
-    const configColor = this.options.colors?.[type];
-
-    if (!configColor) return null;
-
-    element.style.color = isExpanded ? configColor.expanded : configColor.collapsed;
+Accordion.prototype.initializeSwitch = function () {
+    this.updateUI();
 }
 
-Accordion.prototype.initializeSwitch = function ({ items: { item, head, title, icon, body } } = {}) {
+Accordion.prototype.updateItemUI = function ({ item, head, title, icon, body } = {}) {
 
     this.state[item.dataset.accordionIndex] = !this.state[item.dataset.accordionIndex];
 
-    this.changeColorStatus({
-        element: head,
-        collapsedColor: this.options.colors.head.collapsed,
-        expandedColor: this.options.colors.head.expanded
-    });
+    const colorTargets = [
+        {
+            element: head,
+            elementType: 'head',
+            styleType: 'backgroundColor',
+            isExpanded: this.state[item.dataset.accordionIndex]
+        },
+        {
+            element: title,
+            elementType: 'title',
+            styleType: 'color',
+            isExpanded: this.state[item.dataset.accordionIndex]
+        },
+        {
+            element: icon,
+            elementType: 'icon',
+            styleType: 'color',
+            isExpanded: this.state[item.dataset.accordionIndex]
+        }
+    ];
 
-    this.changeColorStatus({
-        element: title,
-        collapsedColor: this.options.colors.title.collapsed,
-        expandedColor: this.options.colors.title.expanded
-    });
+    this.setColor(colorTargets);
 
-    this.changeColorStatus({
-        element: icon,
-        collapsedColor: this.options.colors.icon.collapsed,
-        expandedColor: this.options.colors.icon.expanded
-    });
-
-    this.setBackgroundColor(head);
-
-    this.setColor({
-        element: title,
-        type: 'title',
+    this.setHeightElement({
+        element: body,
         isExpanded: this.state[item.dataset.accordionIndex]
     });
 
-    this.setColor({
+    this.setIconDegree({
         element: icon,
-        type: 'icon',
         isExpanded: this.state[item.dataset.accordionIndex]
     });
-
-    if (this.state[item.dataset.accordionIndex]) {
-
-        this.setIconDegree({
-            icon,
-            value: '-225'
-        });
-
-        this.setHeightElement(body);
-    }
-    else {
-
-        this.setIconDegree({ icon });
-        this.resetHeightElement(body);
-    }
 }
