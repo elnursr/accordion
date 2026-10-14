@@ -27,6 +27,7 @@ export default function Accordion({
 
     this.mode = mode;
     this.state = {};
+    this.activeIndex = null;
     this.wrapper = wrapper;
 
     this.defaults = {
@@ -142,14 +143,14 @@ Accordion.prototype.dispatchAction = function () {
 
     this.wrapper.addEventListener('click', function (e) {
 
-        const itemElements = this.getItemElements(e);
+        const itemElement = this.getItemElements(e);
 
-        if (!itemElements) return;
+        if (!itemElement) return;
 
         if (this.mode === 'toggle') {
-            this.initializeToggle(itemElements);
+            this.initializeToggle(itemElement);
         } else {
-            this.initializeSwitch(itemElements);
+            this.initializeSwitch(itemElement);
         }
     }.bind(this));
 }
@@ -193,25 +194,48 @@ Accordion.prototype.initializeToggle = function (accordions) {
 
     const clickedIndex = Number(accordions.item.dataset.accordionIndex);
 
-    const activeIndex = Object.keys(this.state);
+    if (this.activeIndex !== null && this.activeIndex !== clickedIndex) {
 
-    // const isExpanded = clickedIndex ? activeIndex : false;
+        const oldItemElement = document.querySelector(`[data-accordion-index="${this.activeIndex}"]`);
 
-    // this.updateItemUI({ accordions, isExpanded });
+        if (oldItemElement) {
+            const oldAccordions = {
+                item: oldItemElement,
+                head: oldItemElement.querySelector('.accordion__head'),
+                title: oldItemElement.querySelector('.accordion__title'),
+                icon: oldItemElement.querySelector('.accordion__icon'),
+                body: oldItemElement.querySelector('.accordion__body')
+            };
+
+            this.updateItemUI({ accordions: oldAccordions, itemState: this.state });
+        }
+    }
+
+    this.updateItemUI({ accordions, itemState: this.state });
+
+    if (this.state[clickedIndex]) {
+        this.activeIndex = clickedIndex;
+    } else {
+        this.activeIndex = null;
+    }
 }
 
 Accordion.prototype.initializeSwitch = function (accordions) {
 
-    const index = Number(accordions.item.dataset.accordionIndex);
+    const itemState = this.state;
 
-    this.state[index] = !this.state[index];
-
-    const isExpanded = this.state[index];
-
-    this.updateItemUI({ accordions, isExpanded });
+    this.updateItemUI({ accordions, itemState });
 }
 
-Accordion.prototype.updateItemUI = function ({ accordions: { head, title, icon, body }, isExpanded } = {}) {
+Accordion.prototype.updateItemUI = function ({ accordions: { item, head, title, icon, body }, itemState } = {}) {
+
+    const clickedIndex = Number(item.dataset.accordionIndex);
+
+    itemState[clickedIndex] = !itemState[clickedIndex];
+
+    const isExpanded = itemState[clickedIndex];
+
+    item.dataset.ex = isExpanded;
 
     const colorTargets = [
         {

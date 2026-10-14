@@ -12,13 +12,13 @@
 }
 
 ::-moz-selection {
-  color: rgb(255, 255, 255);
-  background-color: rgb(0, 0, 0);
+  color: white;
+  background-color: black;
 }
 
 ::selection {
-  color: rgb(255, 255, 255);
-  background-color: rgb(0, 0, 0);
+  color: white;
+  background-color: black;
 }
 
 .accordion {
@@ -42,7 +42,7 @@
   position: relative;
   width: 100%;
   border-radius: 0.3em;
-  border: 1px solid rgb(0, 0, 0);
+  border: 1px solid black;
 }
 .accordion__head {
   -webkit-user-select: none;
@@ -83,7 +83,7 @@
   transition: color 0.5s;
 }
 .accordion__title--active {
-  color: rgb(255, 255, 255);
+  color: white;
 }
 .accordion__icon {
   display: inline-block;
@@ -103,7 +103,7 @@
   stroke-linejoin: round;
 }
 .accordion__icon--active {
-  color: rgb(255, 255, 255);
+  color: white;
 }
 
 .container {

@@ -3,6 +3,7 @@ export function AccordionItem(
         index,
         title, icon, description,
         defaults: {
+            attributes:{isExpanded},
             colors: { head: { collapsed: headColor }, title: { collapsed: titleColor }, icon: { collapsed: iconColor } },
             classNames: { item: itemClass, head: headClass, title: titleClass, icon: iconClass, body: bodyClass, description: descriptionClass }
         }
@@ -10,7 +11,7 @@ export function AccordionItem(
 ) {
     return (
         `
-            <li class="${itemClass}" data-accordion-item="accItem" data-accordion-index="${index}">
+            <li class="${itemClass}" data-accordion-item="accItem" data-accordion-index="${index}" data-ex="${isExpanded}">
                 <div class="${headClass}" data-accordion-head="accHead" data-accordion-color="${headColor}">
                     <h1 class="${titleClass}" data-accordion-title="accTitle" data-accordion-color="${titleColor}">${title}</h1>
                     <span class="${iconClass}" data-accordion-icon="accIcon" data-accordion-color="${iconColor}">
