@@ -1,7 +1,12 @@
-$black: rgb(0, 0, 0);
-$white: rgb(255, 255, 255);
+$color-black: rgb(0, 0, 0);
+$color-white: rgb(255, 255, 255);
 
-// selection variables start here
-$colorSelection: $white;
-$backgroundColorSelection: $black;
-// selection variables end here
+// border
+$color-border: rgba($color-black, .1);
+
+// border radius
+$border-radius-base:.3rem;
+
+// selection
+$color-selection: $color-white;
+$bg-color-selection: $color-black;

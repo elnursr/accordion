@@ -23,12 +23,6 @@
         border-top-left-radius: .21em;
         border-top-right-radius: .21em;
         transition: background-color .3s;
-
-        &--active {
-            background-color: #c62017;
-            // background-color: #158bd2;
-            // background-color: #db8e19;
-        }
     }
 
     &__head,
@@ -45,10 +39,6 @@
 
     &__title {
         transition: color .5s;
-
-        &--active {
-            color: rgb(255, 255, 255);
-        }
     }
 
     &__icon {
@@ -64,11 +54,6 @@
             stroke-width: .1em;
             stroke-linecap: round;
             stroke-linejoin: round;
-            // transition: transform .3s;
-        }
-
-        &--active {
-            color: rgb(255, 255, 255);
         }
     }
 }

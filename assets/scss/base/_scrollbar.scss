@@ -1,0 +1,16 @@
+@use '../abstracts' as v;
+
+::-webkit-scrollbar {
+    width: 0.5em;
+    background-color: v.$color-black;
+}
+
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-thumb {
+    border-radius: v.$border-radius-base;
+}
+
+::-webkit-scrollbar-thumb {
+    box-shadow: 0 3px 12px 7px rgba(v.$color-black, .3);
+    background-image: linear-gradient(180deg, v.$color-black, v.$color-white);
+}

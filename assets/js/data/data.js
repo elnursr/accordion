@@ -1,29 +1,4 @@
-export const accordions = [
-    {
-        icon: 'chevron-right',
-        title: 'Mortal Kombat II',
-        description: "When emperor Shao Kahn invokes a Mortal Kombat tournament rematch, Raiden gathers his Earthrealm warriors and takes them into Outworld."
-    },
-    {
-        icon: 'chevron-right',
-        title: 'Mortal Kombat',
-        description: "A reboot of the Mortal Kombat franchise with a retcon to the earliest periods in the series, featuring a multitude of game modes."
-    },
-    {
-        icon: 'chevron-right',
-        title: 'Mortal Kombat X',
-        description: "Two years after the death of Shao Khan, the heroes of Earthrealm must face their fallen comrades and prevent Shinnok from corrupting the Jinsei, the source of Earthrealm's life-force."
-    },
-    {
-        icon: 'chevron-right',
-        title: 'Mortal Kombat 11',
-        description: 'When a time lord starts merging past with the present, versions of heroes from both Mortal Kombat timelines must unite to right past wrongs and save the world.'
-    },
-    {
-        icon: 'chevron-right',
-        title: 'Mortal Kombat 1',
-        description: "Discover a reborn Mortal Kombat Universe created by the Fire God Liu Kang. Mortal Kombat 1 ushers in a new era of the iconic franchise with a new fighting system, game modes, and fatalities."
-    },
+export const woflensteins = [
     {
         icon: 'plus',
         title: 'Wolfenstein Return To Castle',
@@ -48,5 +23,33 @@ export const accordions = [
         icon: 'plus',
         title: 'Wolfenstein II The New Colossus',
         description: 'In 1961, BJ Blazkowicz and his ragtag team of allies arrive in Nazi-controlled America on a mission to recruit the boldest resistance leaders left and restart the American Revolution.'
+    }
+];
+
+export const mortal_kombats = [
+    {
+        icon: 'chevron-right',
+        title: 'Mortal Kombat II',
+        description: "When emperor Shao Kahn invokes a Mortal Kombat tournament rematch, Raiden gathers his Earthrealm warriors and takes them into Outworld."
+    },
+    {
+        icon: 'chevron-right',
+        title: 'Mortal Kombat',
+        description: "A reboot of the Mortal Kombat franchise with a retcon to the earliest periods in the series, featuring a multitude of game modes."
+    },
+    {
+        icon: 'chevron-right',
+        title: 'Mortal Kombat X',
+        description: "Two years after the death of Shao Khan, the heroes of Earthrealm must face their fallen comrades and prevent Shinnok from corrupting the Jinsei, the source of Earthrealm's life-force."
+    },
+    {
+        icon: 'chevron-right',
+        title: 'Mortal Kombat 11',
+        description: 'When a time lord starts merging past with the present, versions of heroes from both Mortal Kombat timelines must unite to right past wrongs and save the world.'
+    },
+    {
+        icon: 'chevron-right',
+        title: 'Mortal Kombat 1',
+        description: "Discover a reborn Mortal Kombat Universe created by the Fire God Liu Kang. Mortal Kombat 1 ushers in a new era of the iconic franchise with a new fighting system, game modes, and fatalities."
     }
 ];

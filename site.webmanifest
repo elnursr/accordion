@@ -1,0 +1,29 @@
+{
+    "name": "Accordion | Static and dynamically accorion modes",
+    "short_name": "Accordion",
+    "icons": [
+        {
+            "sizes": "16x16",
+            "type": "image/png",
+            "src": "https://index.html/assets/media/png/logo/bitez_16_x_16.png"
+        },
+        {
+            "sizes": "32x32",
+            "type": "image/png",
+            "src": "https://index.html/assets/media/png/logo/bitez_32_x_32.png"
+        },
+        {
+            "sizes": "48x48",
+            "type": "image/png",
+            "src": "https://index.html/assets/media/png/logo/bitez_48_x_48.png"
+        },
+        {
+            "sizes": "192x192",
+            "type": "image/png",
+            "src": "https://index.html/assets/media/png/logo/bitez_192_x_192.png"
+        }
+    ],
+    "display": "standalone",
+    "theme-color": "#000000",
+    "background-color": "#000000"
+}

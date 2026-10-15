@@ -31,7 +31,20 @@ export default function Accordion({
     this.wrapper = wrapper;
 
     this.defaults = {
-
+        colors: {
+            head: {
+                collapsed: 'transparent',
+                expanded: '#000000'
+            },
+            title: {
+                collapsed: '#000000',
+                expanded: '#ffffff'
+            },
+            icon: {
+                collapsed: '#000000',
+                expanded: '#ffffff'
+            }
+        },
         attributes: {
             isExpanded: false,
             item: 'accordion-item',
@@ -42,7 +55,6 @@ export default function Accordion({
             description: 'accordion-description',
             color: 'accordion-color',
         },
-
         classNames: {
             item: 'accordion__item',
             head: 'accordion__head',
@@ -50,21 +62,6 @@ export default function Accordion({
             icon: 'accordion__icon',
             body: 'accordion__body',
             description: 'accordion__description',
-        },
-
-        colors: {
-            head: {
-                collapsed: 'transparent',
-                expanded: '#db8e19'
-            },
-            title: {
-                collapsed: '#000000',
-                expanded: '#ffffff'
-            },
-            icon: {
-                collapsed: '#000000',
-                expanded: '#ffffff'
-            }
         }
     };
 
@@ -160,12 +157,6 @@ Accordion.prototype.setHeightElement = function ({ element, isExpanded } = {}) {
     element.style.height = isExpanded ? `${element.scrollHeight}px` : '0px';
 }
 
-Accordion.prototype.resetHeightElements = function (bodyElements) {
-    for (let i = 0; i < bodyElements.length; i++) {
-        bodyElements[i].style.height = '0px';
-    }
-}
-
 Accordion.prototype.setColor = function (items) {
 
     if (!items) return null;
@@ -201,10 +192,10 @@ Accordion.prototype.initializeToggle = function (accordions) {
         if (oldItemElement) {
             const oldAccordions = {
                 item: oldItemElement,
-                head: oldItemElement.querySelector('.accordion__head'),
-                title: oldItemElement.querySelector('.accordion__title'),
-                icon: oldItemElement.querySelector('.accordion__icon'),
-                body: oldItemElement.querySelector('.accordion__body')
+                head: oldItemElement.querySelector(`[data-${this.options.attributes.head}]`),
+                title: oldItemElement.querySelector(`[data-${this.options.attributes.title}]`),
+                icon: oldItemElement.querySelector(`[data-${this.options.attributes.icon}]`),
+                body: oldItemElement.querySelector(`[data-${this.options.attributes.body}]`)
             };
 
             this.updateItemUI({ accordions: oldAccordions, itemState: this.state });
@@ -213,18 +204,11 @@ Accordion.prototype.initializeToggle = function (accordions) {
 
     this.updateItemUI({ accordions, itemState: this.state });
 
-    if (this.state[clickedIndex]) {
-        this.activeIndex = clickedIndex;
-    } else {
-        this.activeIndex = null;
-    }
+    this.activeIndex = this.state[clickedIndex] ? clickedIndex : null;
 }
 
 Accordion.prototype.initializeSwitch = function (accordions) {
-
-    const itemState = this.state;
-
-    this.updateItemUI({ accordions, itemState });
+    this.updateItemUI({ accordions, itemState: this.state });
 }
 
 Accordion.prototype.updateItemUI = function ({ accordions: { item, head, title, icon, body }, itemState } = {}) {
@@ -234,8 +218,6 @@ Accordion.prototype.updateItemUI = function ({ accordions: { item, head, title, 
     itemState[clickedIndex] = !itemState[clickedIndex];
 
     const isExpanded = itemState[clickedIndex];
-
-    item.dataset.ex = isExpanded;
 
     const colorTargets = [
         {
