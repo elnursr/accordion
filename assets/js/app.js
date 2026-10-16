@@ -1,10 +1,10 @@
-import { woflensteins, mortal_kombats } from './data/data.js';
-
 import Accordion from './accordion/index.js'
 
 import { AccordionItem } from './components/AccordionItem.js';
 
-let woflenstein = new Accordion({
+import { woflensteins, mortal_kombats } from './data/data.js';
+
+const woflenstein = new Accordion({
     mode: 'toggle',
     wrapper: '.woflenstein',
     options: {
@@ -17,7 +17,12 @@ let woflenstein = new Accordion({
     }
 });
 
-let mortal_kombat = new Accordion({
+woflenstein.fillUI({
+    accordionItem: AccordionItem,
+    accordionDataItems: woflensteins
+});
+
+const mortal_kombat = new Accordion({
     mode: 'switch',
     wrapper: '.mortal-kombat',
     options: {
@@ -28,11 +33,6 @@ let mortal_kombat = new Accordion({
             }
         }
     }
-});
-
-woflenstein.fillUI({
-    accordionItem: AccordionItem,
-    accordionDataItems: woflensteins
 });
 
 mortal_kombat.fillUI({

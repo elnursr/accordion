@@ -6,6 +6,7 @@ export default function Accordion({
 
     let _wrapper = null;
 
+    // get set accessor in javascript
     Object.defineProperty(this, 'wrapper', {
         get() {
             return _wrapper;
@@ -18,7 +19,7 @@ export default function Accordion({
                 _wrapper = value;
             }
             if (!_wrapper) {
-                console.log(`Accordion ${value} not found!`);
+                console.log(`accordion ${value} not found!`);
             }
         },
         enumerable: true,
@@ -80,16 +81,104 @@ Accordion.prototype.init = function () {
     this.dispatchAction();
 }
 
-Accordion.prototype.selectElement = function (queryString) {
-    if (!this.wrapper || typeof queryString !== 'string') {
-        return null;
-    }
-    return this.wrapper.querySelector(queryString);
+Accordion.prototype.dispatchAction = function () {
+
+    this.wrapper.addEventListener('click', function (e) {
+
+        const itemElement = this.getItemElements(e);
+
+        if (!itemElement) return;
+
+        if (this.mode === 'toggle') {
+            this.initializeToggle(itemElement);
+        } else {
+            this.initializeSwitch(itemElement);
+        }
+    }.bind(this));
 }
 
-Accordion.prototype.setIconDegree = function ({ element, value, isExpanded } = {}) {
+Accordion.prototype.setColor = function (items) {
+
+    if (!items) return null;
+
+    items.forEach((item) => {
+
+        const { element, elementType, styleType, isExpanded } = item;
+
+        const configColor = this.options.colors?.[elementType];
+
+        if (!configColor) return null;
+
+        element.style[styleType] = isExpanded ? configColor.expanded : configColor.collapsed;
+    });
+}
+
+Accordion.prototype.getItemElements = function (event) {
+
+    const headElement = event.target.closest(`.${this.options.classNames.head}`);
+
+    if (!headElement) return null;
+
+    const itemElement = headElement.closest(`[data-${this.options.attributes.item}]`);
+
+    if (!itemElement) return null;
+
+    return {
+        item: itemElement,
+        head: headElement,
+        title: itemElement.querySelector(`[data-${this.options.attributes.title}]`),
+        icon: itemElement.querySelector(`[data-${this.options.attributes.icon}]`),
+        body: itemElement.querySelector(`[data-${this.options.attributes.body}]`)
+    };
+}
+
+Accordion.prototype.initializeToggle = function (accordions) {
+
+    const clickedIndex = Number(accordions.item.dataset.accordionIndex);
+
+    if (this.activeIndex !== null && this.activeIndex !== clickedIndex) {
+
+        this.getItemElement({
+            activeIndex: this.activeIndex,
+            updateItemUI: this.updateItemUI.bind(this)
+        });
+    }
+
+    this.updateItemUI({ accordions, itemState: this.state });
+
+    this.activeIndex = this.state[clickedIndex] ? clickedIndex : null;
+}
+
+Accordion.prototype.initializeSwitch = function (accordions) {
+    this.updateItemUI({ accordions, itemState: this.state });
+}
+
+Accordion.prototype.setIconDegree = function ({ element, isExpanded } = {}) {
     if (!element) return;
     element.style.transform = isExpanded ? 'rotate(-225deg)' : 'rotate(0deg)';
+}
+
+Accordion.prototype.getItemElement = function ({ activeIndex, updateItemUI }) {
+
+    const element = document.querySelector(`[data-accordion-index="${activeIndex}"]`);
+
+    if (element) {
+        const oldAccordions = {
+            item: element,
+            head: element.querySelector(`[data-${this.options.attributes.head}]`),
+            title: element.querySelector(`[data-${this.options.attributes.title}]`),
+            icon: element.querySelector(`[data-${this.options.attributes.icon}]`),
+            body: element.querySelector(`[data-${this.options.attributes.body}]`)
+        };
+
+        // updateItemUI parameter is callback function here
+        updateItemUI({ accordions: oldAccordions, itemState: this.state });
+    }
+}
+
+Accordion.prototype.setHeightElement = function ({ element, isExpanded } = {}) {
+    if (!element) return null;
+    element.style.height = isExpanded ? `${element.scrollHeight}px` : '0px';
 }
 
 Accordion.prototype.fillUI = function ({ accordionDataItems, accordionItem } = {}) {
@@ -115,100 +204,6 @@ Accordion.prototype.fillUI = function ({ accordionDataItems, accordionItem } = {
     }
 
     this.wrapper.innerHTML = renderedHTML;
-}
-
-Accordion.prototype.getItemElements = function (event) {
-
-    const headElement = event.target.closest(`.${this.options.classNames.head}`);
-
-    if (!headElement) return null;
-
-    const itemElement = headElement.closest(`[data-${this.options.attributes.item}]`);
-
-    if (!itemElement) return null;
-
-    return {
-        item: itemElement,
-        head: headElement,
-        title: itemElement.querySelector(`[data-${this.options.attributes.title}]`),
-        icon: itemElement.querySelector(`[data-${this.options.attributes.icon}]`),
-        body: itemElement.querySelector(`[data-${this.options.attributes.body}]`)
-    };
-}
-
-Accordion.prototype.dispatchAction = function () {
-
-    this.wrapper.addEventListener('click', function (e) {
-
-        const itemElement = this.getItemElements(e);
-
-        if (!itemElement) return;
-
-        if (this.mode === 'toggle') {
-            this.initializeToggle(itemElement);
-        } else {
-            this.initializeSwitch(itemElement);
-        }
-    }.bind(this));
-}
-
-Accordion.prototype.setHeightElement = function ({ element, isExpanded } = {}) {
-    if (!element) return null;
-    element.style.height = isExpanded ? `${element.scrollHeight}px` : '0px';
-}
-
-Accordion.prototype.setColor = function (items) {
-
-    if (!items) return null;
-
-    items.forEach((item) => {
-
-        const { element, elementType, styleType, isExpanded } = item;
-
-        const configColor = this.options.colors?.[elementType];
-
-        if (!configColor) return null;
-
-        element.style[styleType] = isExpanded ? configColor.expanded : configColor.collapsed;
-    });
-}
-
-Accordion.prototype.removeActiveClasses = function ({ elements, activeClass }) {
-    for (let i = 0; i < elements.length; i++) {
-        if (elements[i].classList.contains(activeClass)) {
-            elements[i].classList.remove(activeClass);
-        }
-    }
-}
-
-Accordion.prototype.initializeToggle = function (accordions) {
-
-    const clickedIndex = Number(accordions.item.dataset.accordionIndex);
-
-    if (this.activeIndex !== null && this.activeIndex !== clickedIndex) {
-
-        const oldItemElement = document.querySelector(`[data-accordion-index="${this.activeIndex}"]`);
-
-        if (oldItemElement) {
-            const oldAccordions = {
-                item: oldItemElement,
-                head: oldItemElement.querySelector(`[data-${this.options.attributes.head}]`),
-                title: oldItemElement.querySelector(`[data-${this.options.attributes.title}]`),
-                icon: oldItemElement.querySelector(`[data-${this.options.attributes.icon}]`),
-                body: oldItemElement.querySelector(`[data-${this.options.attributes.body}]`)
-            };
-
-            this.updateItemUI({ accordions: oldAccordions, itemState: this.state });
-        }
-    }
-
-    this.updateItemUI({ accordions, itemState: this.state });
-
-    this.activeIndex = this.state[clickedIndex] ? clickedIndex : null;
-}
-
-Accordion.prototype.initializeSwitch = function (accordions) {
-    this.updateItemUI({ accordions, itemState: this.state });
 }
 
 Accordion.prototype.updateItemUI = function ({ accordions: { item, head, title, icon, body }, itemState } = {}) {

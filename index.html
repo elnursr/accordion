@@ -4,10 +4,29 @@
 
 <head>
 
+    <meta property="og:title" content="Accordion">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://">
+    <meta property="og:image:width" content="192">
+    <meta property="og:image:height" content="192">
+    <meta property="og:image" content="https://.png">
+
     <meta charset="UTF-8">
+    <meta name="robots" content="index, follow">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Accordion</title>
+    <title>Accordion | Switch | Toggle</title>
+
+    <link rel="manifest" href="site.webmanifest">
+    <link rel="canonical" href="https://">
+
+    <!-- favicon start here -->
+    <link rel="icon" type="image/png" sizes="16x16" href="https://_16_x_16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://_32_x_32.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="https://_48_x_48.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="https://_192_x_192.png">
+    <link rel="apple-touch-icon" type="image/png" sizes="192x192" href="https://_192_x_192.png">
+    <!-- favicon end here -->
 
     <!-- favicon start here -->
     <link rel="icon" href="assets/media/png/favicon.png">
@@ -17,6 +36,19 @@
     <link rel="stylesheet" href="assets/css/components/accordion/_accordion.css">
     <link rel="stylesheet" href="assets/css/main.css">
     <!-- external css end here -->
+
+    <!-- schema.org start here -->
+    <script type="application/ld+json">
+        {
+            "name": "Accordion",
+            "@type": "Organization",
+            "url": "https://",
+            "@context": "https://schema.org",
+            "logo": "https://_192_x_192.png",
+            "alternateName": ["Accordion", "accordion"]
+        }
+    </script>
+    <!-- schema.org end here -->
 
     <!-- external js start here -->
     <script type="module" src="assets/js/app.js"></script>
@@ -29,172 +61,9 @@
     <!-- accordion start here -->
     <div class="container">
 
-        <menu class="accordion woflenstein">
-            <!-- <li class="accordion__item" data-accordion-item="accItem" data-accordion-index="0">
-                <div class="accordion__head" data-accordion-head="accHead" data-accordion-color="">
-                    <h1 class="accordion__title" data-accordion-title="accTitle" data-accordion-color="#000000">
-                        Wolfenstein Return To Castle</h1>
-                    <span class="accordion__icon" data-accordion-icon="accIcon" data-accordion-color="#000000">
-                        <svg viewBox="0 0 24 24">
-                            <use href="assets/media/svg/icons.svg#icon-plus"></use>
-                        </svg>
-                    </span>
-                </div>
-                <div class="accordion__body" data-accordion-body="accBody">
-                    <p class="accordion__description" data-accordion-description="accDescription">In 1945, the Nazis are
-                        planning to resurrect Heinrich I. After being imprisoned, it is up to O.S.A. soldier B.J.
-                        Blazkowicz to foil the operation.</p>
-                </div>
-            </li>
-            <li class="accordion__item" data-accordion-item="accItem" data-accordion-index="1">
-                <div class="accordion__head" data-accordion-head="accHead" data-accordion-color="">
-                    <h1 class="accordion__title" data-accordion-title="accTitle" data-accordion-color="#000000">
-                        Wolfenstein</h1>
-                    <span class="accordion__icon" data-accordion-icon="accIcon" data-accordion-color="#000000">
-                        <svg viewBox="0 0 24 24">
-                            <use href="assets/media/svg/icons.svg#icon-plus"></use>
-                        </svg>
-                    </span>
-                </div>
-                <div class="accordion__body" data-accordion-body="accBody">
-                    <p class="accordion__description" data-accordion-description="accDescription">B.J is sent to
-                        Isenstadt to find and retrieve the Thule Medallion and 4 crystals to prevent the Nazis from
-                        using it.</p>
-                </div>
-            </li>
-            <li class="accordion__item" data-accordion-item="accItem" data-accordion-index="2">
-                <div class="accordion__head" data-accordion-head="accHead" data-accordion-color="">
-                    <h1 class="accordion__title" data-accordion-title="accTitle" data-accordion-color="#000000">
-                        Wolfenstein The Old Blood</h1>
-                    <span class="accordion__icon" data-accordion-icon="accIcon" data-accordion-color="#000000">
-                        <svg viewBox="0 0 24 24">
-                            <use href="assets/media/svg/icons.svg#icon-plus"></use>
-                        </svg>
-                    </span>
-                </div>
-                <div class="accordion__body" data-accordion-body="accBody">
-                    <p class="accordion__description" data-accordion-description="accDescription">Set in 1946, follows a
-                        man as he tries to discover the locations of a Nazi compound and sabotage Helga Von Schabbs's
-                        plans.</p>
-                </div>
-            </li>
-            <li class="accordion__item" data-accordion-item="accItem" data-accordion-index="3">
-                <div class="accordion__head" data-accordion-head="accHead" data-accordion-color="">
-                    <h1 class="accordion__title" data-accordion-title="accTitle" data-accordion-color="#000000">
-                        Wolfenstein The New Order</h1>
-                    <span class="accordion__icon" data-accordion-icon="accIcon" data-accordion-color="#000000">
-                        <svg viewBox="0 0 24 24">
-                            <use href="assets/media/svg/icons.svg#icon-plus"></use>
-                        </svg>
-                    </span>
-                </div>
-                <div class="accordion__body" data-accordion-body="accBody">
-                    <p class="accordion__description" data-accordion-description="accDescription">After regaining
-                        consciousness following an injury sustained in World War II, legendary American commando, B.J.
-                        Blazkowicz, awakens from a coma in a dystopian Nazi dominated world of 1960s. He tries to locate
-                        the remnants of the resistance.</p>
-                </div>
-            </li>
-            <li class="accordion__item" data-accordion-item="accItem" data-accordion-index="4">
-                <div class="accordion__head" data-accordion-head="accHead" data-accordion-color="">
-                    <h1 class="accordion__title" data-accordion-title="accTitle" data-accordion-color="#000000">
-                        Wolfenstein II The New Colossus</h1>
-                    <span class="accordion__icon" data-accordion-icon="accIcon" data-accordion-color="#000000">
-                        <svg viewBox="0 0 24 24">
-                            <use href="assets/media/svg/icons.svg#icon-plus"></use>
-                        </svg>
-                    </span>
-                </div>
-                <div class="accordion__body" data-accordion-body="accBody">
-                    <p class="accordion__description" data-accordion-description="accDescription">In 1961, BJ Blazkowicz
-                        and his ragtag team of allies arrive in Nazi-controlled America on a mission to recruit the
-                        boldest resistance leaders left and restart the American Revolution.</p>
-                </div>
-            </li> -->
-        </menu>
+        <menu class="accordion woflenstein"></menu>
 
-        <menu class="accordion mortal-kombat">
-            <!-- <li class="accordion__item" data-accordion-item="accItem" data-accordion-index="0">
-                <div class="accordion__head" data-accordion-head="accHead" data-accordion-color="">
-                    <h1 class="accordion__title" data-accordion-title="accTitle" data-accordion-color="#000000">Mortal
-                        Kombat II</h1>
-                    <span class="accordion__icon" data-accordion-icon="accIcon" data-accordion-color="#000000">
-                        <svg viewBox="0 0 24 24">
-                            <use href="assets/media/svg/icons.svg#icon-chevron-right"></use>
-                        </svg>
-                    </span>
-                </div>
-                <div class="accordion__body" data-accordion-body="accBody">
-                    <p class="accordion__description" data-accordion-description="accDescription">When emperor Shao Kahn
-                        invokes a Mortal Kombat tournament rematch, Raiden gathers his Earthrealm warriors and takes
-                        them into Outworld.</p>
-                </div>
-            </li>
-            <li class="accordion__item" data-accordion-item="accItem" data-accordion-index="1">
-                <div class="accordion__head" data-accordion-head="accHead" data-accordion-color="">
-                    <h1 class="accordion__title" data-accordion-title="accTitle" data-accordion-color="#000000">Mortal
-                        Kombat</h1>
-                    <span class="accordion__icon" data-accordion-icon="accIcon" data-accordion-color="#000000">
-                        <svg viewBox="0 0 24 24">
-                            <use href="assets/media/svg/icons.svg#icon-chevron-right"></use>
-                        </svg>
-                    </span>
-                </div>
-                <div class="accordion__body" data-accordion-body="accBody">
-                    <p class="accordion__description" data-accordion-description="accDescription">A reboot of the Mortal
-                        Kombat franchise with a retcon to the earliest periods in the series, featuring a multitude of
-                        game modes.</p>
-                </div>
-            </li>
-            <li class="accordion__item" data-accordion-item="accItem" data-accordion-index="2">
-                <div class="accordion__head" data-accordion-head="accHead" data-accordion-color="">
-                    <h1 class="accordion__title" data-accordion-title="accTitle" data-accordion-color="#000000">Mortal
-                        Kombat X</h1>
-                    <span class="accordion__icon" data-accordion-icon="accIcon" data-accordion-color="#000000">
-                        <svg viewBox="0 0 24 24">
-                            <use href="assets/media/svg/icons.svg#icon-chevron-right"></use>
-                        </svg>
-                    </span>
-                </div>
-                <div class="accordion__body" data-accordion-body="accBody">
-                    <p class="accordion__description" data-accordion-description="accDescription">Two years after the
-                        death of Shao Khan, the heroes of Earthrealm must face their fallen comrades and prevent Shinnok
-                        from corrupting the Jinsei, the source of Earthrealm's life-force.</p>
-                </div>
-            </li>
-            <li class="accordion__item" data-accordion-item="accItem" data-accordion-index="3">
-                <div class="accordion__head" data-accordion-head="accHead" data-accordion-color="">
-                    <h1 class="accordion__title" data-accordion-title="accTitle" data-accordion-color="#000000">Mortal
-                        Kombat 11</h1>
-                    <span class="accordion__icon" data-accordion-icon="accIcon" data-accordion-color="#000000">
-                        <svg viewBox="0 0 24 24">
-                            <use href="assets/media/svg/icons.svg#icon-chevron-right"></use>
-                        </svg>
-                    </span>
-                </div>
-                <div class="accordion__body" data-accordion-body="accBody">
-                    <p class="accordion__description" data-accordion-description="accDescription">When a time lord
-                        starts merging past with the present, versions of heroes from both Mortal Kombat timelines must
-                        unite to right past wrongs and save the world.</p>
-                </div>
-            </li>
-            <li class="accordion__item" data-accordion-item="accItem" data-accordion-index="4">
-                <div class="accordion__head" data-accordion-head="accHead" data-accordion-color="">
-                    <h1 class="accordion__title" data-accordion-title="accTitle" data-accordion-color="#000000">Mortal
-                        Kombat 1</h1>
-                    <span class="accordion__icon" data-accordion-icon="accIcon" data-accordion-color="#000000">
-                        <svg viewBox="0 0 24 24">
-                            <use href="assets/media/svg/icons.svg#icon-chevron-right"></use>
-                        </svg>
-                    </span>
-                </div>
-                <div class="accordion__body" data-accordion-body="accBody">
-                    <p class="accordion__description" data-accordion-description="accDescription">Discover a reborn
-                        Mortal Kombat Universe created by the Fire God Liu Kang. Mortal Kombat 1 ushers in a new era of
-                        the iconic franchise with a new fighting system, game modes, and fatalities.</p>
-                </div>
-            </li> -->
-        </menu>
+        <menu class="accordion mortal-kombat"></menu>
 
     </div>
     <!-- accordion end here -->
