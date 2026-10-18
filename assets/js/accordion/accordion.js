@@ -105,11 +105,18 @@ Accordion.prototype.setColor = function (items) {
 
         const { element, elementType, styleType, isExpanded } = item;
 
+        if (!this.options.colors) {
+            this.options.colors = {};
+        }
+
+        this.options.colors[elementType] = Object.assign({}, this.defaults.colors[elementType], this.options.colors?.[elementType]);
+
         const configColor = this.options.colors?.[elementType];
 
         if (!configColor) return null;
 
         element.style[styleType] = isExpanded ? configColor.expanded : configColor.collapsed;
+
     });
 }
 
@@ -190,8 +197,6 @@ Accordion.prototype.fillUI = function ({ accordionDataItems, accordionItem } = {
     let index = 0;
     let renderedHTML = '';
 
-    const defaults = this.options;
-
     for (let i = 0; i < accordionDataItems.length; i++) {
 
         let { title, icon, description } = accordionDataItems[i];
@@ -200,7 +205,7 @@ Accordion.prototype.fillUI = function ({ accordionDataItems, accordionItem } = {
 
         index = i;
 
-        renderedHTML += accordionItem({ title, icon, description, defaults, index });
+        renderedHTML += accordionItem({ title, icon, description, defaults:this.defaults, index });
     }
 
     this.wrapper.innerHTML = renderedHTML;

@@ -10,7 +10,6 @@ const woflenstein = new Accordion({
     options: {
         colors: {
             head: {
-                collapsed: '',
                 expanded: '#c62017'
             }
         }
@@ -28,7 +27,6 @@ const mortal_kombat = new Accordion({
     options: {
         colors: {
             head: {
-                collapsed: '',
                 expanded: '#db8e19'
             }
         }
