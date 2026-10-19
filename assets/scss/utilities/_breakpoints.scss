@@ -1,0 +1,50 @@
+@use 'sass:map';
+// 319.98px 374.98px 424.98px
+// $breakpoints_mobile: (
+//     'mobile_small': 19.99875em,
+//     'mobile_medium': 23.43625em,
+//     'mobile_large': 26.56125em,
+// );
+// 767.98px
+// $breakpoints_tablet: (
+//     'tablet': 47.99875em,
+// );
+// 1023.98px 1439.98px
+// $breakpoints_laptop: (
+//     'laptop': 63.99875em,
+//     'laptop_large': 89.99875em,
+// );
+
+$breakpoints-up: (
+    // 'medium':,
+    // 'large':,
+);
+
+@mixin breakpoint-up($size) {
+    $breakpointSize: map.get($breakpoints_mobile, $size);
+
+    @media (width <=$breakpointSize) {
+        @content;
+    }
+}
+
+// $breakpoint-tablet: 48em;
+// $breakpoint-desktop: 64em;
+
+// @mixin mobile {
+//     @media (width < $breakpoint-tablet) {
+//         @content;
+//     }
+// }
+
+// @mixin tablet {
+//     @media (width < $breakpoint-desktop) and (width >=$breakpoint-tablet) {
+//         @content;
+//     }
+// }
+
+// • sm: Small screens like smartphones (minimum width 640px)
+// • md: Medium screens like tablets (minimum width 768px)
+// • lg: Large screens like laptops (minimum width 1024px)
+// • xl: Extra-large screens like desktops (minimum width 1280px)
+// • 2xl: Double extra-large screens like large monitors (minimum width 1536px)

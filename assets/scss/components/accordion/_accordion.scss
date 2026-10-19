@@ -1,3 +1,5 @@
+@use '../../utilities' as u;
+
 .accordion {
     display: flex;
     flex-direction: column;
@@ -46,6 +48,10 @@
         width: 1.8em;
         height: 1.8em;
         transition: color .5s, transform .3s;
+
+        @include u.breakpoint('mobile_small') {
+            font-size: .5em;
+        }
 
         svg {
             width: 100%;
