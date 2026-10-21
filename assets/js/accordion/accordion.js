@@ -32,6 +32,12 @@ export default function Accordion({
     this.wrapper = wrapper;
 
     this.defaults = {
+        border: {
+            isBorderColor: false,
+            borderWidth: 1,
+            borderStyle: 'solid',
+            borderColor: '#000000'
+        },
         colors: {
             head: {
                 collapsed: 'transparent',
@@ -67,6 +73,7 @@ export default function Accordion({
     };
 
     this.options = {
+        border: Object.assign({}, this.defaults.border, options.border),
         colors: Object.assign({}, this.defaults.colors, options.colors),
         attributes: Object.assign({}, this.defaults.attributes, options.attributes),
         classNames: Object.assign({}, this.defaults.classNames, options.classNames)
@@ -160,6 +167,16 @@ Accordion.prototype.initializeSwitch = function (accordions) {
     this.updateItemUI({ accordions, itemState: this.state });
 }
 
+Accordion.prototype.setBorder = function ({ element, isBorderColor }) {
+    if (!element) return null;
+    element.style.border = isBorderColor ? `${this.options.border.borderWidth}px ${this.options.border.borderStyle}` : '0px';
+}
+
+Accordion.prototype.setBorderColor = function ({ element, isExpanded }) {
+    if (!element) return null;
+    element.style.borderColor = isExpanded ? this.options.border.borderColor : null;
+}
+
 Accordion.prototype.setIconDegree = function ({ element, isExpanded } = {}) {
     if (!element) return;
     element.style.transform = isExpanded ? 'rotate(-225deg)' : 'rotate(0deg)';
@@ -205,7 +222,7 @@ Accordion.prototype.fillUI = function ({ accordionDataItems, accordionItem } = {
 
         index = i;
 
-        renderedHTML += accordionItem({ title, icon, description, defaults:this.defaults, index });
+        renderedHTML += accordionItem({ title, icon, description, defaults: this.defaults, index });
     }
 
     this.wrapper.innerHTML = renderedHTML;
@@ -242,13 +259,23 @@ Accordion.prototype.updateItemUI = function ({ accordions: { item, head, title, 
 
     this.setColor(colorTargets);
 
+    this.setBorder({
+        element: item,
+        isBorderColor: this.options.border.isBorderColor
+    })
+
+    this.setBorderColor({
+        element: item,
+        isExpanded
+    });
+
     this.setHeightElement({
         element: body,
-        isExpanded: isExpanded
+        isExpanded
     });
 
     this.setIconDegree({
         element: icon,
-        isExpanded: isExpanded
+        isExpanded
     });
 }

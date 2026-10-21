@@ -1,4 +1,4 @@
-export const woflensteins = [
+export const wolfensteins = [
     {
         icon: 'plus',
         title: 'Wolfenstein Return To Castle',

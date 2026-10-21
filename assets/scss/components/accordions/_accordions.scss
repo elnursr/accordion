@@ -1,0 +1,27 @@
+@use '../../utilities' as u;
+
+.accordions {
+        padding: .9em 0;
+    &__heading {
+        text-align: center;
+        font-size: 2.3em;
+        letter-spacing: .01em;
+        padding-bottom: .5em;
+
+        @include u.mobile-sm {
+            font-size: 1.2em;
+        }
+
+        @include u.mobile-md {
+            font-size: 1.3em;
+        }
+
+        @include u.mobile-l {
+            font-size: 1.5em;
+        }
+
+        @include u.tablet {
+            font-size: 1.9em;
+        }
+    }
+}

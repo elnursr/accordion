@@ -15,15 +15,32 @@
 //     'laptop_large': 89.99875em,
 // );
 
+// 767.98px 1023.98px 1439.98px
+$breakpoints-down: (
+    'sm':47.9875em,
+    'md':63.99875em,
+    'l':89.99875em
+);
+
+@mixin breakpoint-down($size) {
+    $breakpointSize: map.get($breakpoints-down, $size);
+
+    @media (width < $breakpointSize) {
+        @content;
+    }
+}
+
+// 768px 1024px 1440px
 $breakpoints-up: (
-    // 'medium':,
-    // 'large':,
+    'md':48em,
+    'l':64em,
+    'xl':90em
 );
 
 @mixin breakpoint-up($size) {
-    $breakpointSize: map.get($breakpoints_mobile, $size);
+    $breakpointSize: map.get($breakpoints-up, $size);
 
-    @media (width <=$breakpointSize) {
+    @media (width > $breakpointSize) {
         @content;
     }
 }
@@ -31,11 +48,36 @@ $breakpoints-up: (
 // $breakpoint-tablet: 48em;
 // $breakpoint-desktop: 64em;
 
-// @mixin mobile {
-//     @media (width < $breakpoint-tablet) {
-//         @content;
-//     }
-// }
+$sm: 20em;
+$md: 23.4375em;
+$l: 26.5625em;
+$tablet: 48em;
+$laptop: 64em;
+$laptop-l: 90em;
+
+@mixin mobile-sm {
+    @media (width <=$sm) {
+        @content;
+    }
+}
+
+@mixin mobile-md {
+    @media (width >$sm) and (width <=$md) {
+        @content;
+    }
+}
+
+@mixin mobile-l {
+    @media (width >$md) and (width <=$l) {
+        @content;
+    }
+}
+
+@mixin tablet {
+    @media (width >$l) and (width <=$tablet) {
+        @content;
+    }
+}
 
 // @mixin tablet {
 //     @media (width < $breakpoint-desktop) and (width >=$breakpoint-tablet) {
