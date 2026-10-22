@@ -7,9 +7,9 @@ import { wolfensteins, mortal_kombats } from './data/data.js';
 const wolfenstein = new Accordion({
     mode: 'toggle',
     wrapper: '.wolfenstein',
+    isBordered: true,
     options: {
-          border: {
-            isBorderColor: true,
+        border: {
             borderColor: '#c62017'
         },
         colors: {
@@ -28,9 +28,9 @@ wolfenstein.fillUI({
 const mortal_kombat = new Accordion({
     mode: 'switch',
     wrapper: '.mortal-kombat',
+    isBordered: true,
     options: {
         border: {
-            isBorderColor: true,
             borderColor: '#db8e19'
         },
         colors: {

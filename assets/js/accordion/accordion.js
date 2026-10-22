@@ -1,7 +1,8 @@
 export default function Accordion({
-    mode = 'switch',
     wrapper = '',
     options = {},
+    mode = 'switch',
+    isBordered = false,
 } = {}) {
 
     let _wrapper = null;
@@ -28,12 +29,12 @@ export default function Accordion({
 
     this.mode = mode;
     this.state = {};
+    this.isBordered = isBordered;
     this.activeIndex = null;
     this.wrapper = wrapper;
 
     this.defaults = {
         border: {
-            isBorderColor: false,
             borderWidth: 1,
             borderStyle: 'solid',
             borderColor: '#000000'
@@ -88,22 +89,6 @@ Accordion.prototype.init = function () {
     this.dispatchAction();
 }
 
-Accordion.prototype.dispatchAction = function () {
-
-    this.wrapper.addEventListener('click', function (e) {
-
-        const itemElement = this.getItemElements(e);
-
-        if (!itemElement) return;
-
-        if (this.mode === 'toggle') {
-            this.initializeToggle(itemElement);
-        } else {
-            this.initializeSwitch(itemElement);
-        }
-    }.bind(this));
-}
-
 Accordion.prototype.setColor = function (items) {
 
     if (!items) return null;
@@ -125,6 +110,26 @@ Accordion.prototype.setColor = function (items) {
         element.style[styleType] = isExpanded ? configColor.expanded : configColor.collapsed;
 
     });
+}
+
+Accordion.prototype.dispatchAction = function () {
+
+    this.wrapper.addEventListener('click', function (e) {
+
+        const itemElement = this.getItemElements(e);
+
+        if (!itemElement) return;
+
+        if (this.mode === 'toggle') {
+            this.initializeToggle(itemElement);
+        } else {
+            this.initializeSwitch(itemElement);
+        }
+    }.bind(this));
+}
+
+Accordion.prototype.setBorder = function (isBordered) {
+    return isBordered ? `${this.options.border.borderWidth}px ${this.options.border.borderStyle}` : '0px';
 }
 
 Accordion.prototype.getItemElements = function (event) {
@@ -167,22 +172,22 @@ Accordion.prototype.initializeSwitch = function (accordions) {
     this.updateItemUI({ accordions, itemState: this.state });
 }
 
-Accordion.prototype.setBorder = function ({ element, isBorderColor }) {
-    if (!element) return null;
-    element.style.border = isBorderColor ? `${this.options.border.borderWidth}px ${this.options.border.borderStyle}` : '0px';
-}
-
-Accordion.prototype.setBorderColor = function ({ element, isExpanded }) {
-    if (!element) return null;
-    element.style.borderColor = isExpanded ? this.options.border.borderColor : null;
-}
-
 Accordion.prototype.setIconDegree = function ({ element, isExpanded } = {}) {
     if (!element) return;
     element.style.transform = isExpanded ? 'rotate(-225deg)' : 'rotate(0deg)';
 }
 
-Accordion.prototype.getItemElement = function ({ activeIndex, updateItemUI }) {
+Accordion.prototype.setBorderColor = function ({ element, isExpanded } = {}) {
+    if (!element) return null;
+    element.style.borderColor = isExpanded ? this.options.border.borderColor : null;
+}
+
+Accordion.prototype.setHeightElement = function ({ element, isExpanded } = {}) {
+    if (!element) return null;
+    element.style.height = isExpanded ? `${element.scrollHeight}px` : '0px';
+}
+
+Accordion.prototype.getItemElement = function ({ activeIndex, updateItemUI } = {}) {
 
     const element = document.querySelector(`[data-accordion-index="${activeIndex}"]`);
 
@@ -198,11 +203,6 @@ Accordion.prototype.getItemElement = function ({ activeIndex, updateItemUI }) {
         // updateItemUI parameter is callback function here
         updateItemUI({ accordions: oldAccordions, itemState: this.state });
     }
-}
-
-Accordion.prototype.setHeightElement = function ({ element, isExpanded } = {}) {
-    if (!element) return null;
-    element.style.height = isExpanded ? `${element.scrollHeight}px` : '0px';
 }
 
 Accordion.prototype.fillUI = function ({ accordionDataItems, accordionItem } = {}) {
@@ -222,7 +222,7 @@ Accordion.prototype.fillUI = function ({ accordionDataItems, accordionItem } = {
 
         index = i;
 
-        renderedHTML += accordionItem({ title, icon, description, defaults: this.defaults, index });
+        renderedHTML += accordionItem({ title, icon, description, setBorder: this.setBorder(this.isBordered), defaults: this.defaults, index });
     }
 
     this.wrapper.innerHTML = renderedHTML;
@@ -258,11 +258,6 @@ Accordion.prototype.updateItemUI = function ({ accordions: { item, head, title, 
     ];
 
     this.setColor(colorTargets);
-
-    this.setBorder({
-        element: item,
-        isBorderColor: this.options.border.isBorderColor
-    })
 
     this.setBorderColor({
         element: item,
